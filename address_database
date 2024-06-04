@@ -3,3 +3,9 @@
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATABASE="$SCRIPT_DIR/mydatabase.db"
+
+# Main script
+while [ 1 ]
+do
+
+done

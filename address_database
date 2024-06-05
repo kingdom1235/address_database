@@ -4,8 +4,20 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATABASE="$SCRIPT_DIR/mydatabase.db"
 
-# Main script
-while [ 1 ]
-do
+# Ensure the database file exists
+if [ ! -f "$DATABASE" ]; then
+	sqlite3 "$DATABASE" "CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY,\
+															test TEXT);"
+fi
 
+#ANSI color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Main script
+while [[ 1 ]]; do
+	#TODO
+	echo "TODO"
 done

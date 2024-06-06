@@ -6,8 +6,10 @@ DATABASE="$SCRIPT_DIR/mydatabase.db"
 
 # Ensure the database file exists
 if [ ! -f "$DATABASE" ]; then
-	sqlite3 "$DATABASE" "CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY,\
-															test TEXT);"
+	sqlite3 "$DATABASE" "CREATE TABLE IF NOT EXISTS address(
+							id INTEGER PRIMARY KEY,
+							test TEXT
+						);"
 fi
 
 #ANSI color codes

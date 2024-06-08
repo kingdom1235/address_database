@@ -14,18 +14,31 @@ fi
 
 function log()
 {
-#	TODO Write activities to log files along with timestamp, pass argument as a string
+	# TODO Write activities to log files along with timestamp, pass argument as a string
+	true;
 }
 
 function menu_header()
 {
 	# TODO Just to print welcome menu presntation
+	cat <<- _EOF_
+		My Database Project
+		Please choose the below options:
+
+		1. Add Entry
+		2. Search / Edit Entry
+		x. Exit
+
+		Note: Script Timeout is set
+	_EOF_
+	true;
 }
 
 function field_menu()
 {
 	# TODO to print a selected user information 
 	# Name, Email, Tel no, Mob num, Address, Message
+	true;
 }
 
 function edit_operation()
@@ -34,7 +47,8 @@ function edit_operation()
 	# 1. Ask user about the field to edit
 	# 2. As per user selection, prompt a message to enter respected value
 	# 3. Verify the user entry to field for matching. Eg mob number only 10 digits to enter
-        # 4. Prompt error in case any mismatch of entered data and fields	
+    # 4. Prompt error in case any mismatch of entered data and fields	
+	true;
 }
 
 function search_operation()
@@ -44,6 +58,7 @@ function search_operation()
 	# 2. One by one iterate through each line of database file and search for the entry
 	# 3. If available display all fiels for that entry
 	# 4. Prompt error incase not available
+	true;
 }
 
 function search_and_edit()
@@ -51,12 +66,14 @@ function search_and_edit()
 	# TODO UI for editing and searching 
 	# 1. Show realtime changes while editing
 	# 2. Call above functions respectively
+	true;
 }
 
 function database_entry()
 {
 	# TODO user inputs will be written to database file
 	# 1. If some fields are missing add consicutive ','. Eg: user,,,,,
+	true;
 }
 
 function validate_entry()
@@ -66,6 +83,7 @@ function validate_entry()
 	# 2. Emails must have a @ symbols and ending with .<domain> Eg: user@mail.com
 	# 3. Mobile/Tel numbers must have 10 digits .
 	# 4. Place must have only alphabets
+	true;
 }
 
 function add_entry()
@@ -73,6 +91,7 @@ function add_entry()
 	# TODO adding a new entry to database
 	# 1. Validates the entries
 	# 2. Add to database
+	true;
 }
 
 #ANSI color codes
@@ -84,5 +103,5 @@ NC='\033[0m' # No Color
 # Main script
 while [[ 1 ]]; do
 	#TODO
-	echo "TODO"
+	menu_header;
 done

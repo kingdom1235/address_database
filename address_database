@@ -21,6 +21,7 @@ function log()
 function menu_header()
 {
 	# TODO Just to print welcome menu presntation
+	clear
 	cat <<- _EOF_
 		My Database Project
 		Please choose the below options:
@@ -31,7 +32,7 @@ function menu_header()
 
 		Note: Script Timeout is set
 	_EOF_
-	true;
+	read -p "Please choose your option: "
 }
 
 function field_menu()

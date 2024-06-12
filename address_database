@@ -44,6 +44,24 @@ function field_menu()
 {
 	# TODO to print a selected user information 
 	# Name, Email, Tel no, Mob num, Address, Message
+	clear
+	cat <<- _EOF_
+		My Database Project
+		Please choose the below options:
+
+		Add New Entry Screen:
+
+		1. Name			:
+		2. Email		:
+		3. Tel No		:
+		4. Mob No		:
+		5. Place		:
+		6. Message		:
+		x. Exit
+
+	_EOF_
+	read -p "Please choose the field to be added: "
+
 	true;
 }
 

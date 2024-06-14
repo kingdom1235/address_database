@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# The file names
+#TODO Define all file names used for this project
+# The file paths
+#TODO Define all file paths here
+# The globals
+#TODO Define all global variables required
+# Time out periods
+#TODO Define all timeout values here
+
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATABASE="$SCRIPT_DIR/mydatabase.db"

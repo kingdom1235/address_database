@@ -5,9 +5,15 @@
 # The file paths
 #TODO Define all file paths here
 # The globals
-#TODO Define all global variables required
+name=" "
+email=" "
+tel_no=" "
+mob_no=" "
+place=" "
+message=" "
+
 # Time out periods
-#TODO Define all timeout values here
+TIME_OUT=10
 
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -60,12 +66,12 @@ function field_menu()
 
 		Add New Entry Screen:
 
-		1. Name			:
-		2. Email		:
-		3. Tel No		:
-		4. Mob No		:
-		5. Place		:
-		6. Message		:
+		1. Name			: $name
+		2. Email		: $email
+		3. Tel No		: $tel_no
+		4. Mob No		: $mob_no
+		5. Place		: $place
+		6. Message		: $message
 		x. Exit
 
 	_EOF_
@@ -136,5 +142,7 @@ NC='\033[0m' # No Color
 # Main script
 while [[ 1 ]]; do
 	#TODO
-	menu_header;
+	# menu_header;
+	field_menu;
+	name="Test"
 done

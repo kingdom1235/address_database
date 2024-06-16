@@ -29,7 +29,7 @@ if [ ! -f "$DATABASE" ]; then
 							mob_no TEXT,
 							place TEXT,
 							message TEXT
-						);"
+	);"
 fi
 
 function log()
@@ -53,6 +53,29 @@ function menu_header()
 		Note: Script Timeout is set
 	_EOF_
 	read -p "Please choose your option: "
+
+	true;
+}
+
+function choose_header_option()
+{
+	# TODO Just to choose the menu header option
+	local option="$1"
+	case "$REPLY" in
+		1)
+			echo "Choose menu header option 1"
+			sleep 5
+		;;
+
+		2)
+			echo "Choose menu header option 2"
+			sleep 5
+		;;
+
+		*)
+			echo "Choose menu header option x"
+			sleep 5
+	esac
 }
 
 function field_menu()
@@ -142,7 +165,8 @@ NC='\033[0m' # No Color
 # Main script
 while [[ 1 ]]; do
 	#TODO
-	# menu_header;
-	field_menu;
-	name="Test"
+	menu_header;
+	choose_header_option;
+	# field_menu;
+	# name="Test"
 done

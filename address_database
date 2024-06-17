@@ -15,6 +15,9 @@ message=" "
 # Time out periods
 TIME_OUT=10
 
+# Menu state
+MENU_STATE="menu_header"
+
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATABASE="$SCRIPT_DIR/mydatabase.db"
@@ -63,19 +66,28 @@ function choose_header_option()
 	local option="$1"
 	case "$REPLY" in
 		1)
-			echo "Choose menu header option 1"
-			sleep 5
+			MENU_STATE="add_entry"
+			echo $MENU_STATE
+			sleep 1
 		;;
 
 		2)
-			echo "Choose menu header option 2"
-			sleep 5
+			MENU_STATE="search_edit_entry"
+			echo $MENU_STATE
+			sleep 1
 		;;
 
 		*)
-			echo "Choose menu header option x"
-			sleep 5
+			MENU_STATE="menu_header"
+			echo $MENU_STATE
+			sleep 1
+			exit 0
 	esac
+}
+
+function show_UI()
+{
+
 }
 
 function field_menu()

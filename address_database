@@ -63,7 +63,6 @@ function menu_header()
 function choose_header_option()
 {
 	# TODO Just to choose the menu header option
-	local option="$1"
 	case "$REPLY" in
 		1)
 			MENU_STATE="add_entry"
@@ -82,12 +81,13 @@ function choose_header_option()
 			echo $MENU_STATE
 			sleep 1
 			exit 0
+		;;
 	esac
 }
 
 function show_UI()
 {
-
+	true;
 }
 
 function field_menu()

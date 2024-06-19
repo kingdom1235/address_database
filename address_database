@@ -138,6 +138,26 @@ function search_operation()
 function search_and_edit()
 {
 	# TODO UI for editing and searching 
+	clear
+	cat <<- _EOF_
+		My Database Project
+		Please choose the below options:
+
+		Search / Edit by:
+
+		1. Name			: $name
+		2. Email		: $email
+		3. Tel No		: $tel_no
+		4. Mob No		: $mob_no
+		5. Place		: $place
+		6. Message		: $message
+		7. Save 
+		x. Exit
+
+	_EOF_
+	read -p "Please choose the field to be added: "
+
+	true;
 	# 1. Show realtime changes while editing
 	# 2. Call above functions respectively
 	true;

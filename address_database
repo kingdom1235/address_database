@@ -4,6 +4,18 @@
 #TODO Define all file names used for this project
 # The file paths
 #TODO Define all file paths here
+
+#ANSI color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+txtred='\e[1;31m'
+txtgreen='\e[1;32m'
+txtblue='\e[1;34m'
+txtreset='\e[0m'
+
 # The globals
 name=" "
 email=" "
@@ -45,16 +57,18 @@ function menu_header()
 {
 	# TODO Just to print welcome menu presntation
 	clear
+	echo -e "$(
 	cat <<- _EOF_
 		My Database Project
 		Please choose the below options:
 
 		1. Add Entry
 		2. Search / Edit Entry
-		x. Exit
+		${txtred}x${txtreset}. Exit
 
 		Note: Script Timeout is set
 	_EOF_
+	)"
 	read -p "Please choose your option: "
 
 	true;
@@ -188,11 +202,6 @@ function add_entry()
 	true;
 }
 
-#ANSI color codes
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
 
 # Main script
 while [[ 1 ]]; do

@@ -121,7 +121,7 @@ function field_menu()
 		4. Mob No		: $mob_no
 		5. Place		: $place
 		6. Message		: $message
-		x. Exit
+		${txtred}x${txtreset}. Exit
 
 	_EOF_
 	read -p "Please choose the field to be added: "
@@ -166,7 +166,7 @@ function search_and_edit()
 		5. Place		: $place
 		6. Message		: $message
 		7. Save 
-		x. Exit
+		${txtred}x${txtreset}. Exit
 
 	_EOF_
 	read -p "Please choose the field to be added: "

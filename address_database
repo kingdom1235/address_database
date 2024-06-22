@@ -20,10 +20,11 @@ place=" "
 message=" "
 
 # Time out periods
-TIME_OUT=10
+TIME_OUT=5
 
 # Menu state
 MENU_STATE="menu_header"
+FIELD_MENU_STATE="field"
 
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -64,7 +65,8 @@ function menu_header()
 		Note: Script Timeout is set
 	_EOF_
 	)"
-	read -p "Please choose your option: "
+	
+	read -t $TIME_OUT -p "Please choose your option: "
 
 	true;
 }

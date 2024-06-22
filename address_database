@@ -6,11 +6,6 @@
 #TODO Define all file paths here
 
 #ANSI color codes
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
 txtred='\e[1;31m'
 txtgreen='\e[1;32m'
 txtblue='\e[1;34m'
@@ -77,9 +72,10 @@ function menu_header()
 function choose_header_option()
 {
 	# TODO Just to choose the menu header option
-	case "$REPLY" in
+	local option=$REPLY
+	case $option in
 		1)
-			MENU_STATE="add_entry"
+			MENU_STATE="field_menu"
 			echo $MENU_STATE
 			sleep 1
 		;;
@@ -101,6 +97,20 @@ function choose_header_option()
 
 function show_UI()
 {
+	case $MENU_STATE in
+		menu_header) 
+			menu_header
+			choose_header_option
+		;;
+
+		field_menu)
+			field_menu
+		;;
+
+		search_edit_entry)
+			search_and_edit
+		;;
+	esac
 	true;
 }
 
@@ -109,21 +119,23 @@ function field_menu()
 	# TODO to print a selected user information 
 	# Name, Email, Tel no, Mob num, Address, Message
 	clear
-	cat <<- _EOF_
-		My Database Project
-		Please choose the below options:
+	echo -e "$(
+		cat <<- _EOF_
+			My Database Project
+			Please choose the below options:
 
-		Add New Entry Screen:
+			Add New Entry Screen:
 
-		1. Name			: $name
-		2. Email		: $email
-		3. Tel No		: $tel_no
-		4. Mob No		: $mob_no
-		5. Place		: $place
-		6. Message		: $message
-		${txtred}x${txtreset}. Exit
+			1. Name			: $name
+			2. Email		: $email
+			3. Tel No		: $tel_no
+			4. Mob No		: $mob_no
+			5. Place		: $place
+			6. Message		: $message
+			${txtred}x${txtreset}. Exit
 
-	_EOF_
+		_EOF_
+	)"
 	read -p "Please choose the field to be added: "
 
 	true;
@@ -153,22 +165,24 @@ function search_and_edit()
 {
 	# TODO UI for editing and searching 
 	clear
-	cat <<- _EOF_
-		My Database Project
-		Please choose the below options:
+	echo -e "$(
+		cat <<- _EOF_
+			My Database Project
+			Please choose the below options:
 
-		Search / Edit by:
+			Search / Edit by:
 
-		1. Name			: $name
-		2. Email		: $email
-		3. Tel No		: $tel_no
-		4. Mob No		: $mob_no
-		5. Place		: $place
-		6. Message		: $message
-		7. Save 
-		${txtred}x${txtreset}. Exit
+			1. Name			: $name
+			2. Email		: $email
+			3. Tel No		: $tel_no
+			4. Mob No		: $mob_no
+			5. Place		: $place
+			6. Message		: $message
+			7. Save 
+			${txtred}x${txtreset}. Exit
 
-	_EOF_
+		_EOF_
+	)"
 	read -p "Please choose the field to be added: "
 
 	true;
@@ -204,10 +218,9 @@ function add_entry()
 
 
 # Main script
-while [[ 1 ]]; do
+while [[ true ]]; do
 	#TODO
-	menu_header;
-	choose_header_option;
+	show_UI
 	# field_menu;
 	# name="Test"
 done

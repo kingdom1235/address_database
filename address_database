@@ -34,8 +34,8 @@ DATABASE="$SCRIPT_DIR/mydatabase.db"
 if [ ! -f "$DATABASE" ]; then
 	sqlite3 "$DATABASE" "CREATE TABLE IF NOT EXISTS address(
 							id INTEGER PRIMARY KEY AUTOINCREMENT,
-							name TEXT NOT NULL,
-							email TEXT NOT NULL,
+							name TEXT,
+							email TEXT,
 							tel_no TEXT,
 							mob_no TEXT,
 							place TEXT,
@@ -88,7 +88,7 @@ function choose_header_option()
 			# sleep 1
 		;;
 
-		*)
+		x)
 			MENU_STATE="menu_header"
 			# echo $MENU_STATE
 			# sleep 1
@@ -106,7 +106,9 @@ function show_UI()
 		;;
 
 		"field_menu")
+			# The order below is important. Don't change
 			field_menu
+			add_entry
 			choose_field_menu_option
 		;;
 
@@ -200,6 +202,55 @@ function choose_field_menu_option()
 	fi
 }
 
+function add_entry()
+{
+	# TODO adding a new entry to database
+	# 1. Validates the entries
+	# 2. Add to database
+	local option="$REPLY"
+	if [[ $FIELD_MENU_STATE != "field" ]]; then
+		case $FIELD_MENU_STATE in
+			"Name")
+				name=$option
+				sqlite3 "$DATABASE" "INSERT INTO address (name) VALUES ('$name');" 
+				echo $name
+				sleep 1
+				FIELD_MENU_STATE="field"
+			;;
+
+			"Email")
+				true
+			;;
+
+			"Telephone Number")
+				true
+			;;
+
+			"Mobile Number")
+				true
+			;;
+
+			"Place")
+				true
+			;;
+
+			"Message")
+				true
+			;;
+		esac
+	fi
+}
+
+function validate_entry()
+{
+	# TODO Inputs entered by user must be verified and validated as per fields
+	# 1. Names should have only alphabets
+	# 2. Emails must have a @ symbols and ending with .<domain> Eg: user@mail.com
+	# 3. Mobile/Tel numbers must have 10 digits .
+	# 4. Place must have only alphabets
+	true;
+}
+
 function edit_operation()
 {
 	# TODO Provide an option to change fields of an entry
@@ -257,29 +308,9 @@ function database_entry()
 	true;
 }
 
-function validate_entry()
-{
-	# TODO Inputs entered by user must be verified and validated as per fields
-	# 1. Names should have only alphabets
-	# 2. Emails must have a @ symbols and ending with .<domain> Eg: user@mail.com
-	# 3. Mobile/Tel numbers must have 10 digits .
-	# 4. Place must have only alphabets
-	true;
-}
-
-function add_entry()
-{
-	# TODO adding a new entry to database
-	# 1. Validates the entries
-	# 2. Add to database
-	true;
-}
-
 
 # Main script
 while [[ true ]]; do
 	#TODO
 	show_UI
-	# field_menu;
-	# name="Test"
 done

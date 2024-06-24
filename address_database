@@ -208,13 +208,14 @@ function add_entry()
 	# 1. Validates the entries
 	# 2. Add to database
 	local option="$REPLY"
+	local id=$(sqlite3 $DATABASE "SELECT last_insert_rowid();" | xargs | sed 's/[^0-9]*//g')
+	echo $id
+	sleep 2
 	if [[ $FIELD_MENU_STATE != "field" ]]; then
 		case $FIELD_MENU_STATE in
 			"Name")
 				name=$option
 				sqlite3 "$DATABASE" "INSERT INTO address (name) VALUES ('$name');" 
-				echo $name
-				sleep 1
 				FIELD_MENU_STATE="field"
 			;;
 

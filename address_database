@@ -18,6 +18,7 @@ tel_no=" "
 mob_no=" "
 place=" "
 message=" "
+id=" "
 
 # Time out periods
 TIME_OUT=5
@@ -153,8 +154,8 @@ function field_menu()
 
 function choose_field_menu_option()
 {
-	local option="$REPLY"
 	if [[ $FIELD_MENU_STATE == "field" ]]; then
+		local option="$REPLY"
 		case $option in
 			1)
 				FIELD_MENU_STATE="Name"
@@ -194,6 +195,8 @@ function choose_field_menu_option()
 
 			x)
 				FIELD_MENU_STATE="field"
+				database_entry
+				reset_global_value
 				MENU_STATE="menu_header"
 				# echo $FIELD_MENU_STATE
 				# sleep 1
@@ -207,36 +210,46 @@ function add_entry()
 	# TODO adding a new entry to database
 	# 1. Validates the entries
 	# 2. Add to database
-	local option="$REPLY"
-	local id=$(sqlite3 $DATABASE "SELECT last_insert_rowid();" | xargs | sed 's/[^0-9]*//g')
-	local new_id=$((id+1))
-	echo $new_id
-	sleep 2
+	# local option="$REPLY"
+	# local id=$(sqlite3 $DATABASE "SELECT last_insert_rowid();" | xargs | sed 's/[^0-9]*//g')
+	# local new_id=$((id+1))
+	# echo $new_id
+	# sleep 2
 	if [[ $FIELD_MENU_STATE != "field" ]]; then
+		local option="$REPLY"
 		case $FIELD_MENU_STATE in
 			"Name")
 				name=$option
-				sqlite3 "$DATABASE" "INSERT INTO address (name) VALUES ('$name') WHERE id = $new_id;" 
 				FIELD_MENU_STATE="field"
 			;;
 
 			"Email")
+				email=$option
+				FIELD_MENU_STATE="field"
 				true
 			;;
 
 			"Telephone Number")
+				tel_no=$option
+				FIELD_MENU_STATE="field"
 				true
 			;;
 
 			"Mobile Number")
+				mob_no=$option
+				FIELD_MENU_STATE="field"
 				true
 			;;
 
 			"Place")
+				place=$option
+				FIELD_MENU_STATE="field"
 				true
 			;;
 
 			"Message")
+				message=$option
+				FIELD_MENU_STATE="field"
 				true
 			;;
 		esac
@@ -253,23 +266,24 @@ function validate_entry()
 	true;
 }
 
-function edit_operation()
+function database_entry()
 {
-	# TODO Provide an option to change fields of an entry
-	# 1. Ask user about the field to edit
-	# 2. As per user selection, prompt a message to enter respected value
-	# 3. Verify the user entry to field for matching. Eg mob number only 10 digits to enter
-    # 4. Prompt error in case any mismatch of entered data and fields	
+	# TODO user inputs will be written to database file
+	# 1. If some fields are missing add consicutive ','. Eg: user,,,,,
+	sqlite3 $DATABASE "INSERT INTO address (name, email, tel_no, mob_no, place, message) VALUES ('$name', '$email', '$tel_no', '$mob_no', '$place', '$message');"		
+	# TODO symbol ' ' is important
 	true;
 }
 
-function search_operation()
+function reset_global_value()
 {
-	# TODO Ask user for a value to search
-	# 1. Value can be from any field of an entry.
-	# 2. One by one iterate through each line of database file and search for the entry
-	# 3. If available display all fiels for that entry
-	# 4. Prompt error incase not available
+	name=" "
+	email=" "
+	tel_no=" "
+	mob_no=" "
+	place=" "
+	message=" "
+	id=" "
 	true;
 }
 
@@ -303,13 +317,25 @@ function search_and_edit()
 	true;
 }
 
-function database_entry()
+function edit_operation()
 {
-	# TODO user inputs will be written to database file
-	# 1. If some fields are missing add consicutive ','. Eg: user,,,,,
+	# TODO Provide an option to change fields of an entry
+	# 1. Ask user about the field to edit
+	# 2. As per user selection, prompt a message to enter respected value
+	# 3. Verify the user entry to field for matching. Eg mob number only 10 digits to enter
+    # 4. Prompt error in case any mismatch of entered data and fields	
 	true;
 }
 
+function search_operation()
+{
+	# TODO Ask user for a value to search
+	# 1. Value can be from any field of an entry.
+	# 2. One by one iterate through each line of database file and search for the entry
+	# 3. If available display all fiels for that entry
+	# 4. Prompt error incase not available
+	true;
+}
 
 # Main script
 while [[ true ]]; do

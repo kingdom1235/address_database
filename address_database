@@ -196,30 +196,45 @@ function add_entry()
 		local option="$REPLY"
 		case $FIELD_MENU_STATE in
 			"Name")
-				name=$option
-				FIELD_MENU_STATE="field"
+				validate_entry $option $FIELD_MENU_STATE
+				if [[ $flag_add_entry_error == "false" ]]; then
+					FIELD_MENU_STATE="field"
+				fi
+				true
 			;;
 
 			"Email")
-				email=$option
+				validate_entry $option $FIELD_MENU_STATE
 				FIELD_MENU_STATE="field"
+				if [[ $flag_add_entry_error == "false" ]]; then
+					FIELD_MENU_STATE="field"
+				fi
 				true
 			;;
 
 			"Telephone Number")
-				tel_no=$option
+				validate_entry $option $FIELD_MENU_STATE
 				FIELD_MENU_STATE="field"
+				if [[ $flag_add_entry_error == "false" ]]; then
+					FIELD_MENU_STATE="field"
+				fi
 				true
 			;;
 
 			"Mobile Number")
-				mob_no=$option
+				validate_entry $option $FIELD_MENU_STATE
+				if [[ $flag_add_entry_error == "false" ]]; then
+					FIELD_MENU_STATE="field"
+				fi
 				FIELD_MENU_STATE="field"
 				true
 			;;
 
 			"Place")
-				place=$option
+				validate_entry $option $FIELD_MENU_STATE
+				if [[ $flag_add_entry_error == "false" ]]; then
+					FIELD_MENU_STATE="field"
+				fi
 				FIELD_MENU_STATE="field"
 				true
 			;;
@@ -242,19 +257,67 @@ function validate_entry()
 	# 4. Place must have only alphabets
 	local option="$1"
 	local state="$2"
+	echo "Validate entry with $1 and $2"
+	sleep 4
 	case $state in
 		"Name")
+			if [[ ! "$option" =~ ^[a-zA-Z]+$ ]]; then
+				echo -e "${txtred}Invalid name. Only alphabets are allowed.${txtreset}"
+				flag_add_entry_error=true
+				sleep 2
+			else
+				name=$option
+				flag_add_entry_error=false
+			fi
 		;;
 
 		"Email")
+			if [[ ! "$option" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
+				echo -e "${txtred}Invalid email. Must be in the format user@mail.com.${txtreset}"
+				flag_add_entry_error=true
+				sleep 2
+			else
+				email=$option
+				flag_add_entry_error=false
+			fi
 		;;
 
-		"Telephone Number" | "Mobile Number")
+		"Telephone Number")
+			if [[ ! "$option" =~ ^[0-9]{10}$ ]]; then
+				echo -e "${txtred}Invalid mobile number. Must be exactly 10 digits.${txtreset}"
+				flag_add_entry_error=true
+				sleep 2
+			else
+				tel_no=$option
+				flag_add_entry_error=false
+			fi
+		;;
+
+
+		"Mobile Number")
+			if [[ ! "$option" =~ ^[0-9]{10}$ ]]; then
+				echo -e "${txtred}Invalid mobile number. Must be exactly 10 digits.${txtreset}"
+				flag_add_entry_error=true
+				sleep 2
+			else
+				mob_no=$option
+				flag_add_entry_error=false
+			fi
 		;;
 
 		"Place")
+			if [[ ! "$place" =~ ^[a-zA-Z]+$ ]]; then
+				echo -e "${txtred}Invalid place. Only alphabets are allowed.${txtreset}"
+				flag_add_entry_error=true
+				sleep 2
+			else
+				place=$option
+				flag_add_entry_error=false
+			fi
 		;;
 	esac
+	echo "flag_add_entry_error is $flag_add_entry_error"
+	sleep 3
 	true;
 }
 

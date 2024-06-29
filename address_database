@@ -21,12 +21,18 @@ message=" "
 id=" "
 flag_add_entry_error=false
 
+# Search and edit variables
+save_or_all="7. All"
+Search="${txtred}Search${txtreset}"
+Edit="Edit"
+
 # Time out periods
 TIME_OUT=5
 
 # Menu state
 MENU_STATE="menu_header"
 FIELD_MENU_STATE="field"
+SEARCH_EDIT_STATE="search"
 
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -69,8 +75,10 @@ function menu_header()
 	)"
 	
 	read -t $TIME_OUT -p "Please choose your option: "
-
-	true;
+	if [[ ! "$REPLY" == "1" || "$REPLY" == "2" || "$REPLY" = "x" ]]; then
+		echo -e "\t"
+		exit 0
+	fi
 }
 
 function choose_header_option()
@@ -196,7 +204,7 @@ function add_entry()
 		local option="$REPLY"
 		case $FIELD_MENU_STATE in
 			"Name")
-				validate_entry $option $FIELD_MENU_STATE
+				validate_entry $option "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
@@ -204,8 +212,7 @@ function add_entry()
 			;;
 
 			"Email")
-				validate_entry $option $FIELD_MENU_STATE
-				FIELD_MENU_STATE="field"
+				validate_entry $option "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
@@ -213,8 +220,7 @@ function add_entry()
 			;;
 
 			"Telephone Number")
-				validate_entry $option $FIELD_MENU_STATE
-				FIELD_MENU_STATE="field"
+				validate_entry $option "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
@@ -222,20 +228,18 @@ function add_entry()
 			;;
 
 			"Mobile Number")
-				validate_entry $option $FIELD_MENU_STATE
+				validate_entry $option "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
-				FIELD_MENU_STATE="field"
 				true
 			;;
 
 			"Place")
-				validate_entry $option $FIELD_MENU_STATE
+				validate_entry $option "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
-				FIELD_MENU_STATE="field"
 				true
 			;;
 
@@ -257,7 +261,7 @@ function validate_entry()
 	# 4. Place must have only alphabets
 	local option="$1"
 	local state="$2"
-	echo "Validate entry with $1 and $2"
+	echo "Validate entry with $option and $state"
 	sleep 4
 	case $state in
 		"Name")
@@ -288,7 +292,7 @@ function validate_entry()
 				flag_add_entry_error=true
 				sleep 2
 			else
-				tel_no=$option
+				tel_no="+91-$option"
 				flag_add_entry_error=false
 			fi
 		;;
@@ -300,13 +304,13 @@ function validate_entry()
 				flag_add_entry_error=true
 				sleep 2
 			else
-				mob_no=$option
+				mob_no="+91-$option"
 				flag_add_entry_error=false
 			fi
 		;;
 
 		"Place")
-			if [[ ! "$place" =~ ^[a-zA-Z]+$ ]]; then
+			if [[ ! "$option" =~ ^[a-zA-Z]+$ ]]; then
 				echo -e "${txtred}Invalid place. Only alphabets are allowed.${txtreset}"
 				flag_add_entry_error=true
 				sleep 2
@@ -351,7 +355,7 @@ function search_and_edit()
 			My Database Project
 			Please choose the below options:
 
-			Search / Edit by:
+			$Search / $Edit by:
 
 			1. Name			: $name
 			2. Email		: $email
@@ -359,7 +363,7 @@ function search_and_edit()
 			4. Mob No		: $mob_no
 			5. Place		: $place
 			6. Message		: $message
-			7. Save 
+			$save_or_all 
 			${txtred}x${txtreset}. Exit
 
 		_EOF_

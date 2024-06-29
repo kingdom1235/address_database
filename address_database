@@ -265,8 +265,8 @@ function validate_entry()
 	# 4. Place must have only alphabets
 	local option="$1"
 	local state="$2"
-	echo "Validate entry with $option and $state"
-	sleep 4
+	# echo "Validate entry with $option and $state"
+	# sleep 4
 	case $state in
 		"Name")
 			if [[ ! "$option" =~ ^[a-zA-Z]+$ ]]; then
@@ -324,8 +324,8 @@ function validate_entry()
 			fi
 		;;
 	esac
-	echo "flag_add_entry_error is $flag_add_entry_error"
-	sleep 3
+	# echo "flag_add_entry_error is $flag_add_entry_error"
+	# sleep 3
 	true;
 }
 

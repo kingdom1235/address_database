@@ -33,10 +33,7 @@ TIME_OUT=5
 MENU_STATE="menu_header"
 FIELD_MENU_STATE="field"
 SEARCH_EDIT_STATE="search"
-
-# Set the path to the database 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DATABASE="$SCRIPT_DIR/mydatabase.db"
+# Set the path to the database SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" DATABASE="$SCRIPT_DIR/mydatabase.db"
 
 # Ensure the database file exists
 if [ ! -f "$DATABASE" ]; then
@@ -121,6 +118,8 @@ function show_UI()
 		;;
 
 		"search_edit_entry")
+			SEARCH_EDIT_STATE="edit"
+			change_between_search_edit
 			search_and_edit
 		;;
 	esac
@@ -378,6 +377,20 @@ function search_and_edit()
 	# 1. Show realtime changes while editing
 	# 2. Call above functions respectively
 	true;
+}
+
+function change_between_search_edit()
+{
+	# TODO Show changes between search and edit menu
+	if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
+		save_or_all="${txtred}7. Save${txtreset}"
+		Search="Search"
+		Edit="${txtred}Edit${txtreset}"
+	else
+		save_or_all="7. All"
+		Search="${txtred}Search${txtreset}"
+		Edit="Edit"
+	fi
 }
 
 function edit_operation()

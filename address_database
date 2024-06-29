@@ -75,8 +75,13 @@ function menu_header()
 	)"
 	
 	read -t $TIME_OUT -p "Please choose your option: "
-	if [[ ! "$REPLY" == "1" || "$REPLY" == "2" || "$REPLY" = "x" ]]; then
+
+	if [[ "$REPLY" == "" ]]; then
 		echo -e "\t"
+		exit 0
+	fi
+
+	if [[ "$REPLY" == "x" ]]; then
 		exit 0
 	fi
 }
@@ -96,7 +101,6 @@ function choose_header_option()
 
 		x)
 			MENU_STATE="menu_header"
-			exit 0
 		;;
 	esac
 }

@@ -196,6 +196,7 @@ function add_entry()
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
+				REPLY="" # Reset Reply
 				true
 			;;
 
@@ -204,6 +205,7 @@ function add_entry()
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
+				REPLY="" # Reset Reply
 				true
 			;;
 
@@ -212,6 +214,7 @@ function add_entry()
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
+				REPLY="" # Reset Reply
 				true
 			;;
 
@@ -220,6 +223,7 @@ function add_entry()
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
+				REPLY="" # Reset Reply
 				true
 			;;
 
@@ -228,12 +232,14 @@ function add_entry()
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
+				REPLY="" # Reset Reply
 				true
 			;;
 
 			"Message")
 				message=$option
 				FIELD_MENU_STATE="field"
+				REPLY="" # Reset Reply
 				true
 			;;
 		esac
@@ -438,6 +444,7 @@ function search_operation()
 				sqlite3 -header -column "$DATABASE" "SELECT * FROM address;"
 				sleep 10
 				SEARCH_MENU_STATE="field"
+				REPLY=""
 				true	
 			;;
 		esac
@@ -513,10 +520,11 @@ function show_UI()
 		;;
 
 		"search_edit_entry")
+			# The order below is important. Don't change
 			change_between_search_edit
 			search_and_edit
-			choose_search_menu_option	
 			search_operation
+			choose_search_menu_option	
 		;;
 	esac
 	true;

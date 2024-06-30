@@ -33,7 +33,10 @@ TIME_OUT=5
 MENU_STATE="menu_header"
 FIELD_MENU_STATE="field"
 SEARCH_EDIT_STATE="search"
-# Set the path to the database SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" DATABASE="$SCRIPT_DIR/mydatabase.db"
+
+# Set the path to the database 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" 
+DATABASE="$SCRIPT_DIR/mydatabase.db"
 
 # Ensure the database file exists
 if [ ! -f "$DATABASE" ]; then
@@ -48,12 +51,14 @@ if [ ! -f "$DATABASE" ]; then
 	);"
 fi
 
+#-----------------------------LOG FILE-------------------------------#
 function log()
 {
 	# TODO Write activities to log files along with timestamp, pass argument as a string
 	true;
 }
 
+#-----------------------------MAIN MENU-------------------------------#
 function menu_header()
 {
 	# TODO Just to print welcome menu presntation
@@ -102,30 +107,8 @@ function choose_header_option()
 	esac
 }
 
-function show_UI()
-{
-	case $MENU_STATE in
-		"menu_header") 
-			menu_header
-			choose_header_option
-		;;
 
-		"field_menu")
-			# The order below is important. Don't change
-			field_menu
-			add_entry
-			choose_field_menu_option
-		;;
-
-		"search_edit_entry")
-			SEARCH_EDIT_STATE="edit"
-			change_between_search_edit
-			search_and_edit
-		;;
-	esac
-	true;
-}
-
+#-----------------------------ADD (FIELD) MENU-------------------------------#
 function field_menu()
 {
 	# TODO to print a selected user information 
@@ -349,6 +332,8 @@ function reset_global_value()
 	true;
 }
 
+
+#-----------------------------SEARCH / EDIT MENU-------------------------------#
 function search_and_edit()
 {
 	# TODO UI for editing and searching 
@@ -393,6 +378,16 @@ function change_between_search_edit()
 	fi
 }
 
+function search_operation()
+{
+	# TODO Ask user for a value to search
+	# 1. Value can be from any field of an entry.
+	# 2. One by one iterate through each line of database file and search for the entry
+	# 3. If available display all fiels for that entry
+	# 4. Prompt error incase not available
+	true;
+}
+
 function edit_operation()
 {
 	# TODO Provide an option to change fields of an entry
@@ -403,13 +398,27 @@ function edit_operation()
 	true;
 }
 
-function search_operation()
+#-----------------------------SHOW UI-------------------------------#
+function show_UI()
 {
-	# TODO Ask user for a value to search
-	# 1. Value can be from any field of an entry.
-	# 2. One by one iterate through each line of database file and search for the entry
-	# 3. If available display all fiels for that entry
-	# 4. Prompt error incase not available
+	case $MENU_STATE in
+		"menu_header") 
+			menu_header
+			choose_header_option
+		;;
+
+		"field_menu")
+			# The order below is important. Don't change
+			field_menu
+			add_entry
+			choose_field_menu_option
+		;;
+
+		"search_edit_entry")
+			change_between_search_edit
+			search_and_edit
+		;;
+	esac
 	true;
 }
 

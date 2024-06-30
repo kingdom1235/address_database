@@ -78,7 +78,7 @@ function menu_header()
 	_EOF_
 	)"
 	
-	read -t $TIME_OUT -p "Please choose your option: "
+	read -r -t $TIME_OUT -p "Please choose your option: "
 
 	if [[ "$REPLY" == "" ]]; then
 		echo -e "\t"
@@ -135,9 +135,9 @@ function field_menu()
 	)"
 
 	if [[ $FIELD_MENU_STATE == "field" ]]; then
-		read -p "Please choose the field to be added: "
+		read -r -p "Please choose the field to be added: "
 	else 
-		read -p "Please enter the $FIELD_MENU_STATE: "
+		read -r -p "Please enter the $FIELD_MENU_STATE: "
 	fi
 
 	true;
@@ -192,7 +192,7 @@ function add_entry()
 		local option="$REPLY"
 		case $FIELD_MENU_STATE in
 			"Name")
-				validate_entry $option "$FIELD_MENU_STATE"
+				validate_entry "$option" "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
@@ -201,7 +201,7 @@ function add_entry()
 			;;
 
 			"Email")
-				validate_entry $option "$FIELD_MENU_STATE"
+				validate_entry "$option" "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
@@ -210,7 +210,7 @@ function add_entry()
 			;;
 
 			"Telephone Number")
-				validate_entry $option "$FIELD_MENU_STATE"
+				validate_entry "$option" "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
@@ -219,7 +219,7 @@ function add_entry()
 			;;
 
 			"Mobile Number")
-				validate_entry $option "$FIELD_MENU_STATE"
+				validate_entry "$option" "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
@@ -228,7 +228,7 @@ function add_entry()
 			;;
 
 			"Place")
-				validate_entry $option "$FIELD_MENU_STATE"
+				validate_entry "$option" "$FIELD_MENU_STATE"
 				if [[ $flag_add_entry_error == "false" ]]; then
 					FIELD_MENU_STATE="field"
 				fi
@@ -237,7 +237,7 @@ function add_entry()
 			;;
 
 			"Message")
-				message=$option
+				message="$option"
 				FIELD_MENU_STATE="field"
 				REPLY="" # Reset Reply
 				true
@@ -367,22 +367,22 @@ function search_and_edit()
 
 	if [[ $SEARCH_EDIT_STATE == "search" ]]; then
 		if [[ $SEARCH_MENU_STATE == "field" ]]; then
-			read -p "Please choose the field to be searched: "
+			read -r -p "Please choose the field to be searched: "
 		else
 			if [[ $SEARCH_MENU_STATE == "All" ]]; then
 				true
 			else
-				read -p "Please enter the $SEARCH_MENU_STATE: "
+				read -r -p "Please enter the $SEARCH_MENU_STATE: "
 			fi
 		fi
 	fi
 	true;
 
 	if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
-		if [[ $SEARCH_MENU_STATE == "field" ]]; then
-			read -p "Please choose your option: "
+		if [[ $EDIT_MENU_STATE == "field" ]]; then
+			read -r -p "Please choose your option: "
 		else
-			read -p "Please enter the new $SEARCH_MENU_STATE: "
+			read -r -p "Please enter the new $SEARCH_MENU_STATE: "
 		fi
 		fi
 	true;
@@ -411,43 +411,114 @@ function search_operation()
 	# TODO Ask user for a value to search
 	# 1. Value can be from any field of an entry.
 	# 2. One by one iterate through each line of database file and search for the entry
-	# 3. If available display all fiels for that entry
+	# 3. If available display all fields for that entry
 	# 4. Prompt error incase not available
+	# 5. Delete id if users want
 	if [[ $SEARCH_EDIT_STATE == "search" ]]; then
-		case $SEARCH_MENU_STATE in
-			"Name")
-				true	
-			;;
+		if [[ $SEARCH_MENU_STATE != "field" ]]; then
+			local option=$REPLY
+			local result=""
+			case $SEARCH_MENU_STATE in
+				"Name")
+					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE name='$option';")
+					if [ -z "$result" ]; then
+						echo -e "${txtred}Error. Found no Name${txtreset}"
+						sleep 3
+					else
+						echo "$result"
+						SEARCH_EDIT_STATE="edit"
+						SEARCH_MENU_STATE="field"
+						read -r -p "Select the user id to be displayed: " 
+						id="$REPLY"
+					fi
+					true	
+				;;
 
-			"Email")
-				true	
-			;;
+				"Email")
+					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE email='$option';")
+					if [ -z "$result" ]; then
+						echo -e "${txtred}Error. Found no Email${txtreset}"
+						sleep 3
+					else
+						echo "$result"
+						SEARCH_EDIT_STATE="edit"
+						SEARCH_MENU_STATE="field"
+						read -r -p "Select the user id to be displayed: " 
+						id="$REPLY"
+					fi
+					true	
+				;;
 
-			"Telephone Number")
-				true	
-			;;
+				"Telephone Number")
+					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE tel_no='$option';")
+					if [ -z "$result" ]; then
+						echo -e "${txtred}Error. Found no Telephone Number${txtreset}"
+						sleep 3
+					else
+						echo "$result"
+						SEARCH_EDIT_STATE="edit"
+						SEARCH_MENU_STATE="field"
+						read -r -p "Select the user id to be displayed: " 
+						id="$REPLY"
+					fi
+					true	
+				;;
 
-			"Mobile Number")
-				true	
-			;;
+				"Mobile Number")
+					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE mob_no='$option';")
+					if [ -z "$result" ]; then
+						echo -e "${txtred}Error. Found no Mobile Number${txtreset}"
+						sleep 3
+					else
+						echo "$result"
+						SEARCH_EDIT_STATE="edit"
+						SEARCH_MENU_STATE="field"
+						read -r -p "Select the user id to be displayed: " 
+						id="$REPLY"
+					fi
+					true	
+				;;
 
-			"Place")
-				true	
-			;;
+				"Place")
+					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE place='$option';")
+					if [ -z "$result" ]; then
+						echo -e "${txtred}Error. Found no Place${txtreset}"
+						sleep 3
+					else
+						echo "$result"
+						SEARCH_EDIT_STATE="edit"
+						SEARCH_MENU_STATE="field"
+						read -r -p "Select the user id to be displayed: " 
+						id="$REPLY"
+					fi
+					true	
+				;;
 
-			"Message")
-				true	
-			;;
+				"Message")
+					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE message='$option';")
+					if [ -z "$result" ]; then
+						echo -e "${txtred}Error. Found no Message${txtreset}"
+						sleep 3
+					else
+						echo "$result"
+						SEARCH_EDIT_STATE="edit"
+						SEARCH_MENU_STATE="field"
+						read -r -p "Select the user id to be displayed: " 
+						id="$REPLY"
+					fi
+					true	
+				;;
 
-			"All")
-				echo "Show all data of address book"
-				sqlite3 -header -column "$DATABASE" "SELECT * FROM address;"
-				sleep 10
-				SEARCH_MENU_STATE="field"
-				REPLY=""
-				true	
-			;;
-		esac
+				"All")
+					echo "Show all data of address book"
+					sqlite3 -header -column "$DATABASE" "SELECT * FROM address;"
+					sleep 10
+					SEARCH_MENU_STATE="field"
+					REPLY=""
+					true	
+				;;
+			esac
+		fi
 	fi
 	true;
 }

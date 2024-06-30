@@ -8,6 +8,7 @@
 #ANSI color codes
 txtred='\e[1;31m'
 txtgreen='\e[1;32m'
+txtyellow='\e[1;33m'
 txtblue='\e[1;34m'
 txtreset='\e[0m'
 
@@ -422,7 +423,7 @@ function search_operation()
 				"Name")
 					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE name='$option';")
 					if [ -z "$result" ]; then
-						echo -e "${txtred}Error. Found no Name${txtreset}"
+						echo -e "${txtyellow}Invalid. Found no Name${txtreset}"
 						sleep 3
 					else
 						echo "$result"
@@ -437,7 +438,7 @@ function search_operation()
 				"Email")
 					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE email='$option';")
 					if [ -z "$result" ]; then
-						echo -e "${txtred}Error. Found no Email${txtreset}"
+						echo -e "${txtyellow}Invalid. Found no Email${txtreset}"
 						sleep 3
 					else
 						echo "$result"
@@ -452,7 +453,7 @@ function search_operation()
 				"Telephone Number")
 					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE tel_no='$option';")
 					if [ -z "$result" ]; then
-						echo -e "${txtred}Error. Found no Telephone Number${txtreset}"
+						echo -e "${txtyellow}Invalid. Found no Telephone Number${txtreset}"
 						sleep 3
 					else
 						echo "$result"
@@ -467,7 +468,7 @@ function search_operation()
 				"Mobile Number")
 					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE mob_no='$option';")
 					if [ -z "$result" ]; then
-						echo -e "${txtred}Error. Found no Mobile Number${txtreset}"
+						echo -e "${txtyellow}Invalid. Found no Mobile Number${txtreset}"
 						sleep 3
 					else
 						echo "$result"
@@ -482,7 +483,7 @@ function search_operation()
 				"Place")
 					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE place='$option';")
 					if [ -z "$result" ]; then
-						echo -e "${txtred}Error. Found no Place${txtreset}"
+						echo -e "${txtyellow}Invalid. Found no Place${txtreset}"
 						sleep 3
 					else
 						echo "$result"
@@ -497,7 +498,7 @@ function search_operation()
 				"Message")
 					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE message='$option';")
 					if [ -z "$result" ]; then
-						echo -e "${txtred}Error. Found no Message${txtreset}"
+						echo -e "${txtyellow}Invalid. Found no Message${txtreset}"
 						sleep 3
 					else
 						echo "$result"
@@ -510,7 +511,7 @@ function search_operation()
 				;;
 
 				"All")
-					echo "Show all data of address book"
+					echo -e "${txtgreen}Show all data of address book${txtreset}"
 					sqlite3 -header -column "$DATABASE" "SELECT * FROM address;"
 					sleep 10
 					SEARCH_MENU_STATE="field"

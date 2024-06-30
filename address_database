@@ -33,6 +33,8 @@ TIME_OUT=5
 MENU_STATE="menu_header"
 FIELD_MENU_STATE="field"
 SEARCH_EDIT_STATE="search"
+SEARCH_MENU_STATE="field"
+EDIT_MENU_STATE="field"
 
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" 
@@ -356,9 +358,29 @@ function search_and_edit()
 
 		_EOF_
 	)"
-	read -p "Please choose the field to be added: "
 
+	if [[ $SEARCH_EDIT_STATE == "search" ]]; then
+		if [[ $SEARCH_MENU_STATE == "field" ]]; then
+			read -p "Please choose the field to be searched: "
+		else
+			if [[ $SEARCH_MENU_STATE == "All" ]]; then
+				true
+			else
+				read -p "Please enter the $SEARCH_MENU_STATE: "
+			fi
+		fi
+	fi
 	true;
+
+	if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
+		if [[ $SEARCH_MENU_STATE == "field" ]]; then
+			read -p "Please choose your option: "
+		else
+			read -p "Please enter the new $SEARCH_MENU_STATE: "
+		fi
+		fi
+	true;
+
 	# 1. Show realtime changes while editing
 	# 2. Call above functions respectively
 	true;
@@ -385,7 +407,83 @@ function search_operation()
 	# 2. One by one iterate through each line of database file and search for the entry
 	# 3. If available display all fiels for that entry
 	# 4. Prompt error incase not available
+	if [[ $SEARCH_EDIT_STATE == "search" ]]; then
+		case $SEARCH_MENU_STATE in
+			"Name")
+				true	
+			;;
+
+			"Email")
+				true	
+			;;
+
+			"Telephone Number")
+				true	
+			;;
+
+			"Mobile Number")
+				true	
+			;;
+
+			"Place")
+				true	
+			;;
+
+			"Message")
+				true	
+			;;
+
+			"All")
+				echo "Show all data of address book"
+				sqlite3 -header -column "$DATABASE" "SELECT * FROM address;"
+				sleep 10
+				SEARCH_MENU_STATE="field"
+				true	
+			;;
+		esac
+	fi
 	true;
+}
+
+function choose_search_menu_option()
+{
+	if [[ $SEARCH_MENU_STATE == "field" ]]; then
+		local option="$REPLY"
+		case $option in
+			1)
+				SEARCH_MENU_STATE="Name"
+			;;
+
+			2)
+				SEARCH_MENU_STATE="Email"
+			;;
+
+			3)
+				SEARCH_MENU_STATE="Telephone Number"
+			;;
+
+			4)
+				SEARCH_MENU_STATE="Mobile Number"
+			;;
+
+			5)
+				SEARCH_MENU_STATE="Place"
+			;;
+
+			6)
+				SEARCH_MENU_STATE="Message"
+			;;
+
+			7)
+				SEARCH_MENU_STATE="All"
+			;;
+
+			x)
+				SEARCH_MENU_STATE="field"
+				MENU_STATE="menu_header"
+			;;
+		esac
+	fi
 }
 
 function edit_operation()
@@ -417,6 +515,8 @@ function show_UI()
 		"search_edit_entry")
 			change_between_search_edit
 			search_and_edit
+			choose_search_menu_option	
+			search_operation
 		;;
 	esac
 	true;

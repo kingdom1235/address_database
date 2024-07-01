@@ -22,6 +22,9 @@ message=" "
 id=" "
 flag_add_entry_error=false
 
+# Country code
+COUNTRY_CODE="+84"
+
 # Search and edit variables
 save_or_all="7. All"
 Search="${txtred}Search${txtreset}"
@@ -287,7 +290,7 @@ function validate_entry()
 				flag_add_entry_error=true
 				sleep 2
 			else
-				tel_no="+91-$option"
+				tel_no="$COUNTRY_CODE-$option"
 				flag_add_entry_error=false
 			fi
 		;;
@@ -299,7 +302,7 @@ function validate_entry()
 				flag_add_entry_error=true
 				sleep 2
 			else
-				mob_no="+91-$option"
+				mob_no="$COUNTRY_CODE-$option"
 				flag_add_entry_error=false
 			fi
 		;;
@@ -324,7 +327,7 @@ function database_entry()
 {
 	# TODO user inputs will be written to database file
 	# 1. If some fields are missing add consicutive ','. Eg: user,,,,,
-	sqlite3 $DATABASE "INSERT INTO address (name, email, tel_no, mob_no, place, message) VALUES ('$name', '$email', '$tel_no', '$mob_no', '$place', '$message');"		
+	sqlite3 "$DATABASE" "INSERT INTO address (name, email, tel_no, mob_no, place, message) VALUES ('$name', '$email', '$tel_no', '$mob_no', '$place', '$message');"		
 	# TODO symbol ' ' is important
 	true;
 }
@@ -377,7 +380,6 @@ function search_and_edit()
 			fi
 		fi
 	fi
-	true;
 
 	if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
 		if [[ $EDIT_MENU_STATE == "field" ]]; then
@@ -386,10 +388,6 @@ function search_and_edit()
 			read -r -p "Please enter the new $SEARCH_MENU_STATE: "
 		fi
 		fi
-	true;
-
-	# 1. Show realtime changes while editing
-	# 2. Call above functions respectively
 	true;
 }
 
@@ -417,7 +415,7 @@ function search_operation()
 	# 5. Delete id if users want
 	if [[ $SEARCH_EDIT_STATE == "search" ]]; then
 		if [[ $SEARCH_MENU_STATE != "field" ]]; then
-			local option=$REPLY
+			local option="$REPLY"
 			local result=""
 			case $SEARCH_MENU_STATE in
 				"Name")
@@ -451,6 +449,8 @@ function search_operation()
 				;;
 
 				"Telephone Number")
+					echo "option = $option"
+					sleep 3
 					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE tel_no='$option';")
 					if [ -z "$result" ]; then
 						echo -e "${txtyellow}Invalid. Found no Telephone Number${txtreset}"

@@ -417,14 +417,20 @@ function search_operation()
 		if [[ $SEARCH_MENU_STATE != "field" ]]; then
 			local option="$REPLY"
 			local result=""
+			local id_database=""
 			case $SEARCH_MENU_STATE in
 				"Name")
 					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE name='$option';")
+					id_database=$(sqlite3 -header -column "$DATABASE" "SELECT id FROM address WHERE name='$option';")
 					if [ -z "$result" ]; then
 						echo -e "${txtyellow}Invalid. Found no Name${txtreset}"
 						sleep 3
 					else
 						echo "$result"
+						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
+						for id in "${ids[@]}"; do
+							echo "$id"
+						done
 						SEARCH_EDIT_STATE="edit"
 						SEARCH_MENU_STATE="field"
 						read -r -p "Select the user id to be displayed: " 

@@ -20,7 +20,10 @@ mob_no=" "
 place=" "
 message=" "
 id=" "
+
+# Flag
 flag_add_entry_error=false
+flag_choose_id_in_search=false
 
 # Country code
 COUNTRY_CODE="+84"
@@ -428,13 +431,28 @@ function search_operation()
 					else
 						echo "$result"
 						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-						for id in "${ids[@]}"; do
-							echo "$id"
-						done
-						SEARCH_EDIT_STATE="edit"
-						SEARCH_MENU_STATE="field"
 						read -r -p "Select the user id to be displayed: " 
 						id="$REPLY"
+						echo $id
+						for id_i in "${ids[@]}"; do
+							if [[ $id == $id_i ]]; then
+								echo "ID FOUND"
+								flag_choose_id_in_search=false
+								break
+							else
+								echo "NOT FOUND: $id_i"
+								flag_choose_id_in_search=true
+							fi
+						done
+						echo "flag_choose_id_in_search is $flag_choose_id_in_search"
+						sleep 4
+						if [[ $flag_choose_id_in_search == false ]]; then
+							SEARCH_EDIT_STATE="edit"
+							SEARCH_MENU_STATE="field"
+						else
+							echo -e "${txtred}Wrong id.${txtreset}"
+							sleep 2
+						fi
 					fi
 					true	
 				;;

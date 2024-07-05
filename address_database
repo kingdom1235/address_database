@@ -379,7 +379,7 @@ function search_and_edit()
 			if [[ $SEARCH_MENU_STATE == "All" ]]; then
 				true
 			else
-				read -r -p "Please enter the $SEARCH_MENU_STATE: "
+				read -r -p "Please enter the $SEARCH_MENU_STATE: " 
 			fi
 		fi
 	fi
@@ -410,7 +410,7 @@ function change_between_search_edit()
 
 function validate_id()
 {
-	local id_input=$1
+	local id_input="$1"
 	local ids=("${@:2}")
 	for id_i in "${ids[@]}"; do
 		if [ "$id_input" -eq "$id_i" ]; then
@@ -421,6 +421,7 @@ function validate_id()
 		fi
 	done
 	if [[ $flag_choose_id_in_search == false ]]; then
+        read -r -p "Do you want to delete it? (y/n)"
 		SEARCH_EDIT_STATE="edit"
 		SEARCH_MENU_STATE="field"
 	else
@@ -452,9 +453,14 @@ function search_operation()
 					else
 						echo "$result"
 						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-						read -r -p "Select the user id to be displayed: " 
-						id="$REPLY"
-						validate_id "$id" "${ids[@]}"
+                        while true; do 
+                            read -r -p "Select the user id to be displayed: "  
+                            id="$REPLY"
+                            validate_id "$id" "${ids[@]}"
+                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                break;
+                            fi
+                        done
 					fi
 					true	
 				;;
@@ -468,9 +474,14 @@ function search_operation()
 					else
 						echo "$result"
 						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-						read -r -p "Select the user id to be displayed: " 
-						id="$REPLY"
-						validate_id "$id" "${ids[@]}"
+                        while true; do 
+                            read -r -p "Select the user id to be displayed: "  
+                            id="$REPLY"
+                            validate_id "$id" "${ids[@]}"
+                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                break;
+                            fi
+                        done
 					fi
 					true	
 				;;
@@ -486,9 +497,14 @@ function search_operation()
 					else
 						echo "$result"
 						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-						read -r -p "Select the user id to be displayed: " 
-						id="$REPLY"
-						validate_id "$id" "${ids[@]}"
+                        while true; do 
+                            read -r -p "Select the user id to be displayed: "  
+                            id="$REPLY"
+                            validate_id "$id" "${ids[@]}"
+                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                break;
+                            fi
+                        done
 					fi
 					true	
 				;;
@@ -502,9 +518,14 @@ function search_operation()
 					else
 						echo "$result"
 						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-						read -r -p "Select the user id to be displayed: " 
-						id="$REPLY"
-						validate_id "$id" "${ids[@]}"
+                        while true; do 
+                            read -r -p "Select the user id to be displayed: "  
+                            id="$REPLY"
+                            validate_id "$id" "${ids[@]}"
+                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                break;
+                            fi
+                        done
 					fi
 					true	
 				;;
@@ -518,9 +539,14 @@ function search_operation()
 					else
 						echo "$result"
 						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-						read -r -p "Select the user id to be displayed: " 
-						id="$REPLY"
-						validate_id "$id" "${ids[@]}"
+                        while true; do 
+                            read -r -p "Select the user id to be displayed: "  
+                            id="$REPLY"
+                            validate_id "$id" "${ids[@]}"
+                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                break;
+                            fi
+                        done
 					fi
 					true	
 				;;
@@ -534,9 +560,14 @@ function search_operation()
 					else
 						echo "$result"
 						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-						read -r -p "Select the user id to be displayed: " 
-						id="$REPLY"
-						validate_id "$id" "${ids[@]}"
+                        while true; do 
+                            read -r -p "Select the user id to be displayed: "  
+                            id="$REPLY"
+                            validate_id "$id" "${ids[@]}"
+                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                break;
+                            fi
+                        done
 					fi
 					true	
 				;;

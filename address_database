@@ -388,9 +388,9 @@ function search_and_edit()
 		if [[ $EDIT_MENU_STATE == "field" ]]; then
 			read -r -p "Please choose your option: "
 		else
-			read -r -p "Please enter the new $SEARCH_MENU_STATE: "
+			read -r -p "Please enter the new $EDIT_MENU_STATE: "
 		fi
-		fi
+    fi
 	true;
 }
 
@@ -650,6 +650,14 @@ function show_search_result()
     if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
         local result
         result=$(sqlite3 "$DATABASE" "SELECT * FROM address WHERE id='$id';")
+        IFS=$'\n' read -d '' -r -a lines <<< "$result"
+        IFS='|' read -r i0 i1 i2 i3 i4 i5 i6 <<< "$lines"
+        name="$i1"
+        email="$i2"
+        tel_no="$i3" 
+        mob_no="$i4"
+        place="$i5"
+        message="$i6"
     fi
 }
 

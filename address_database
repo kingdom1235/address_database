@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# The file names
-#TODO Define all file names used for this project
-# The file paths
-#TODO Define all file paths here
-
+#-----------------------------GLOBAL VARIABLE-------------------------------#
 #ANSI color codes
 txtred='\e[1;31m'
 txtgreen='\e[1;32m'
@@ -47,11 +43,13 @@ SEARCH_EDIT_STATE="search"
 SEARCH_MENU_STATE="field"
 EDIT_MENU_STATE="field"
 
+#-----------------------------CREATE FILE-------------------------------#
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" 
+LOG_DIR="$SCRIPT_DIR/log"
 DATABASE="$SCRIPT_DIR/mydatabase.db"
-ADDRESS_DATABASE_CSV="$SCRIPT_DIR/log/address_database.csv"
-LOG_FILE_CSV="$SCRIPT_DIR/log/log_file.csv"
+ADDRESS_DATABASE_CSV="$LOG_DIR/address_database.csv"
+LOG_FILE_CSV="$LOG_DIR/log_file.csv"
 
 # Ensure the database file exists
 if [ ! -f "$DATABASE" ]; then
@@ -78,13 +76,29 @@ if [ ! -f "$DATABASE" ]; then
 	);"
 fi
 
+# Ensure the log directory exists
+if [ ! -d "$LOG_DIR" ]; then
+    mkdir -p "$LOG_DIR"
+fi
+
+# Ensure the log file exists
+if [ ! -f "$ADDRESS_DATABASE_CSV" ]; then
+    touch "$ADDRESS_DATABASE_CSV"
+    chmod 755 "$ADDRESS_DATABASE_CSV"
+fi
+
+if [ ! -f "$LOG_FILE_CSV" ]; then
+    touch "$LOG_FILE_CSV"
+    chmod 755 "$LOG_FILE_CSV"
+fi
+
 #-----------------------------MAIN MENU-------------------------------#
 function menu_header()
 {
 	# TODO Just to print welcome menu presntation
 	clear
 	echo -e "$(
-	cat <<- _EOF_
+	    cat <<- _EOF_
 My Database Project
 Please choose the below options:
 

@@ -20,6 +20,8 @@ mob_no=" "
 place=" "
 message=" "
 id=" "
+mode=""
+time=""
 
 # Flag
 flag_add_entry_error=false
@@ -48,6 +50,8 @@ EDIT_MENU_STATE="field"
 # Set the path to the database 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" 
 DATABASE="$SCRIPT_DIR/mydatabase.db"
+ADDRESS_DATABASE_CSV="$SCRIPT_DIR/log/address_database.csv"
+LOG_FILE_CSV="$SCRIPT_DIR/log/log_file.csv"
 
 # Ensure the database file exists
 if [ ! -f "$DATABASE" ]; then
@@ -60,14 +64,19 @@ if [ ! -f "$DATABASE" ]; then
 							place TEXT,
 							message TEXT
 	);"
-fi
 
-#-----------------------------LOG FILE-------------------------------#
-function log()
-{
-	# TODO Write activities to log files along with timestamp, pass argument as a string
-	true;
-}
+	sqlite3 "$DATABASE" "CREATE TABLE IF NOT EXISTS log(
+							id INTEGER PRIMARY KEY AUTOINCREMENT,
+							name TEXT,
+							email TEXT,
+							tel_no TEXT,
+							mob_no TEXT,
+							place TEXT,
+							message TEXT,
+                            mode TEXT,
+                            time TEXT
+	);"
+fi
 
 #-----------------------------MAIN MENU-------------------------------#
 function menu_header()
@@ -76,16 +85,17 @@ function menu_header()
 	clear
 	echo -e "$(
 	cat <<- _EOF_
-		My Database Project
-		Please choose the below options:
+My Database Project
+Please choose the below options:
 
-		1. Add Entry
-		2. Search / Edit Entry
-		${txtred}x${txtreset}. Exit
+1. Add Entry
+2. Search / Edit Entry
+3. Show log file
+${txtred}x${txtreset}. Exit
 
-		Note: Script Timeout is set
+Note: Script Timeout is set
 	_EOF_
-	)"
+    )"
 	
 	read -r -t $TIME_OUT -p "Please choose your option: "
 
@@ -111,6 +121,10 @@ function choose_header_option()
 		2)
 			MENU_STATE="search_edit_entry"
 		;;
+
+        3)
+            MENU_STATE="log_file"
+        ;;
 
 		x)
 			MENU_STATE="menu_header"
@@ -341,10 +355,12 @@ function validate_entry()
 function database_entry()
 {
 	# TODO user inputs will be written to database file
-	# 1. If some fields are missing add consicutive ','. Eg: user,,,,,
-	sqlite3 "$DATABASE" "INSERT INTO address (name, email, tel_no, mob_no, place, message) VALUES ('$name', '$email', '$tel_no', '$mob_no', '$place', '$message');"		
 	# TODO symbol ' ' is important
-	true;
+	# 1. If some fields are missing add consicutive ','. Eg: user,,,,,
+    local current_time
+    current_time=$(date '+%Y-%m-%d %H:%M:%S')
+	sqlite3 "$DATABASE" "INSERT INTO address (name, email, tel_no, mob_no, place, message) VALUES ('$name', '$email', '$tel_no', '$mob_no', '$place', '$message');"		
+    log "INSERT" "$current_time"
 }
 
 function reset_global_value()
@@ -731,7 +747,10 @@ function choose_edit_menu_option()
 function update_database()
 {
     # echo "$id $name $email $tel_no $mob_no $place $message"
+    local current_time
+    current_time=$(date '+%Y-%m-%d %H:%M:%S')
     sqlite3 "$DATABASE" "UPDATE address SET name='$name', email='$email', tel_no='$tel_no', mob_no='$mob_no', place='$place', message='$message' WHERE id=$id;" 
+    log "UPDATE" "$current_time"
     id=""
     # echo "Update database"
     # sleep 4
@@ -810,6 +829,30 @@ function edit_operation()
 	true;
 }
 
+#-----------------------------LOG FILE-------------------------------#
+function log()
+{
+	# TODO Write activities to log files along with timestamp, pass argument as a string
+    mode="$1"
+    time="$2"
+	sqlite3 "$DATABASE" "INSERT INTO log (name, email, tel_no, mob_no, place, message, mode, time) VALUES ('$name', '$email', '$tel_no', '$mob_no', '$place', '$message', '$mode', '$time');"		
+	true;
+}
+
+function show_log_file()
+{
+    echo -e "\n"
+    echo -e "${txtblue}SHOW LOG FILE${txtreset}"
+    echo -e "\n"
+    sqlite3 -header -csv "$DATABASE" "SELECT * FROM log;" > "$LOG_FILE_CSV"
+    sqlite3 -header -csv "$DATABASE" "SELECT * FROM address;" > "$ADDRESS_DATABASE_CSV" 
+    sqlite3 -header -column "$DATABASE" "SELECT * FROM log;" 
+    echo -e "\n"
+    echo -e "Find log file in directory ${txtyellow}log${txtreset}"
+    read -r -p "Press Enter to escape"
+    MENU_STATE="menu_header"
+}
+
 #-----------------------------SHOW UI-------------------------------#
 function show_UI()
 {
@@ -836,6 +879,10 @@ function show_UI()
             edit_operation
             choose_edit_menu_option
 		;;
+
+        "log_file")
+            show_log_file
+        ;;
 	esac
 	true;
 }

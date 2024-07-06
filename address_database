@@ -24,6 +24,8 @@ id=" "
 # Flag
 flag_add_entry_error=false
 flag_choose_id_in_search=false
+flag_edit_entry_error=false
+flag_show_search=true
 
 # Country code
 COUNTRY_CODE="+84"
@@ -269,10 +271,12 @@ function validate_entry()
 			if [[ ! "$option" =~ ^[a-zA-Z]+$ ]]; then
 				echo -e "${txtred}Invalid name. Only alphabets are allowed.${txtreset}"
 				flag_add_entry_error=true
+                flag_edit_entry_error=true
 				sleep 2
 			else
 				name=$option
 				flag_add_entry_error=false
+                flag_edit_entry_error=false
 			fi
 		;;
 
@@ -280,10 +284,12 @@ function validate_entry()
 			if [[ ! "$option" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]; then
 				echo -e "${txtred}Invalid email. Must be in the format user@mail.com.${txtreset}"
 				flag_add_entry_error=true
+                flag_edit_entry_error=true
 				sleep 2
 			else
 				email=$option
 				flag_add_entry_error=false
+                flag_edit_entry_error=false
 			fi
 		;;
 
@@ -291,10 +297,12 @@ function validate_entry()
 			if [[ ! "$option" =~ ^[0-9]{10}$ ]]; then
 				echo -e "${txtred}Invalid mobile number. Must be exactly 10 digits.${txtreset}"
 				flag_add_entry_error=true
+                flag_edit_entry_error=true
 				sleep 2
 			else
 				tel_no="$COUNTRY_CODE-$option"
 				flag_add_entry_error=false
+                flag_edit_entry_error=false
 			fi
 		;;
 
@@ -303,10 +311,12 @@ function validate_entry()
 			if [[ ! "$option" =~ ^[0-9]{10}$ ]]; then
 				echo -e "${txtred}Invalid mobile number. Must be exactly 10 digits.${txtreset}"
 				flag_add_entry_error=true
+                flag_edit_entry_error=true
 				sleep 2
 			else
 				mob_no="$COUNTRY_CODE-$option"
 				flag_add_entry_error=false
+                flag_edit_entry_error=false
 			fi
 		;;
 
@@ -314,10 +324,12 @@ function validate_entry()
 			if [[ ! "$option" =~ ^[a-zA-Z]+$ ]]; then
 				echo -e "${txtred}Invalid place. Only alphabets are allowed.${txtreset}"
 				flag_add_entry_error=true
+                flag_edit_entry_error=true
 				sleep 2
 			else
 				place=$option
 				flag_add_entry_error=false
+                flag_edit_entry_error=false
 			fi
 		;;
 	esac
@@ -388,7 +400,11 @@ function search_and_edit()
 		if [[ $EDIT_MENU_STATE == "field" ]]; then
 			read -r -p "Please choose your option: "
 		else
-			read -r -p "Please enter the new $EDIT_MENU_STATE: "
+			if [[ $EDIT_MENU_STATE == "Save" ]]; then
+				true
+			else
+				read -r -p "Please enter the new $EDIT_MENU_STATE: " 
+			fi
 		fi
     fi
 	true;
@@ -458,146 +474,151 @@ function search_operation()
 			local option="$REPLY"
 			local result=""
 			local id_database=""
-			case $SEARCH_MENU_STATE in
-				"Name")
-					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE name='$option';")
-					id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE name='$option';")
-					if [ -z "$result" ]; then
-						echo -e "${txtyellow}Invalid. Found no Name${txtreset}"
-						sleep 3
-					else
-						echo "$result"
-						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-                        while true; do 
-                            read -r -p "Select the user id to be displayed: "  
-                            id="$REPLY"
-                            validate_id "$id" "${ids[@]}"
-                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
-                                break;
-                            fi
-                        done
-					fi
-					true	
-				;;
+            if [[ "$option" == "x" ]]; then
+                SEARCH_MENU_STATE="field"
+                REPLY=""
+            else
+                case $SEARCH_MENU_STATE in
+                    "Name")
+                        result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE name='$option';")
+                        id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE name='$option';")
+                        if [ -z "$result" ]; then
+                            echo -e "${txtyellow}Invalid. Found no Name${txtreset}"
+                            sleep 3
+                        else
+                            echo "$result"
+                            IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
+                            while true; do 
+                                read -r -p "Select the user id to be displayed: "  
+                                id="$REPLY"
+                                validate_id "$id" "${ids[@]}"
+                                if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                    break;
+                                fi
+                            done
+                        fi
+                        true	
+                    ;;
 
-				"Email")
-					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE email='$option';")
-					id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE email='$option';")
-					if [ -z "$result" ]; then
-						echo -e "${txtyellow}Invalid. Found no Email${txtreset}"
-						sleep 3
-					else
-						echo "$result"
-						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-                        while true; do 
-                            read -r -p "Select the user id to be displayed: "  
-                            id="$REPLY"
-                            validate_id "$id" "${ids[@]}"
-                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
-                                break;
-                            fi
-                        done
-					fi
-					true	
-				;;
+                    "Email")
+                        result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE email='$option';")
+                        id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE email='$option';")
+                        if [ -z "$result" ]; then
+                            echo -e "${txtyellow}Invalid. Found no Email${txtreset}"
+                            sleep 3
+                        else
+                            echo "$result"
+                            IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
+                            while true; do 
+                                read -r -p "Select the user id to be displayed: "  
+                                id="$REPLY"
+                                validate_id "$id" "${ids[@]}"
+                                if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                    break;
+                                fi
+                            done
+                        fi
+                        true	
+                    ;;
 
-				"Telephone Number")
-					echo "option = $option"
-					sleep 3
-					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE tel_no='$option';")
-					id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE tel_no='$option';")
-					if [ -z "$result" ]; then
-						echo -e "${txtyellow}Invalid. Found no Telephone Number${txtreset}"
-						sleep 3
-					else
-						echo "$result"
-						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-                        while true; do 
-                            read -r -p "Select the user id to be displayed: "  
-                            id="$REPLY"
-                            validate_id "$id" "${ids[@]}"
-                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
-                                break;
-                            fi
-                        done
-					fi
-					true	
-				;;
+                    "Telephone Number")
+                        echo "option = $option"
+                        sleep 3
+                        result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE tel_no='$option';")
+                        id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE tel_no='$option';")
+                        if [ -z "$result" ]; then
+                            echo -e "${txtyellow}Invalid. Found no Telephone Number${txtreset}"
+                            sleep 3
+                        else
+                            echo "$result"
+                            IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
+                            while true; do 
+                                read -r -p "Select the user id to be displayed: "  
+                                id="$REPLY"
+                                validate_id "$id" "${ids[@]}"
+                                if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                    break;
+                                fi
+                            done
+                        fi
+                        true	
+                    ;;
 
-				"Mobile Number")
-					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE mob_no='$option';")
-					id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE mob_no='$option';")
-					if [ -z "$result" ]; then
-						echo -e "${txtyellow}Invalid. Found no Mobile Number${txtreset}"
-						sleep 3
-					else
-						echo "$result"
-						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-                        while true; do 
-                            read -r -p "Select the user id to be displayed: "  
-                            id="$REPLY"
-                            validate_id "$id" "${ids[@]}"
-                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
-                                break;
-                            fi
-                        done
-					fi
-					true	
-				;;
+                    "Mobile Number")
+                        result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE mob_no='$option';")
+                        id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE mob_no='$option';")
+                        if [ -z "$result" ]; then
+                            echo -e "${txtyellow}Invalid. Found no Mobile Number${txtreset}"
+                            sleep 3
+                        else
+                            echo "$result"
+                            IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
+                            while true; do 
+                                read -r -p "Select the user id to be displayed: "  
+                                id="$REPLY"
+                                validate_id "$id" "${ids[@]}"
+                                if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                    break;
+                                fi
+                            done
+                        fi
+                        true	
+                    ;;
 
-				"Place")
-					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE place='$option';")
-					id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE place='$option';")
-					if [ -z "$result" ]; then
-						echo -e "${txtyellow}Invalid. Found no Place${txtreset}"
-						sleep 3
-					else
-						echo "$result"
-						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-                        while true; do 
-                            read -r -p "Select the user id to be displayed: "  
-                            id="$REPLY"
-                            validate_id "$id" "${ids[@]}"
-                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
-                                break;
-                            fi
-                        done
-					fi
-					true	
-				;;
+                    "Place")
+                        result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE place='$option';")
+                        id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE place='$option';")
+                        if [ -z "$result" ]; then
+                            echo -e "${txtyellow}Invalid. Found no Place${txtreset}"
+                            sleep 3
+                        else
+                            echo "$result"
+                            IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
+                            while true; do 
+                                read -r -p "Select the user id to be displayed: "  
+                                id="$REPLY"
+                                validate_id "$id" "${ids[@]}"
+                                if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                    break;
+                                fi
+                            done
+                        fi
+                        true	
+                    ;;
 
-				"Message")
-					result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE message='$option';")
-					id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE message='$option';")
-					if [ -z "$result" ]; then
-						echo -e "${txtyellow}Invalid. Found no Message${txtreset}"
-						sleep 3
-					else
-						echo "$result"
-						IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
-                        while true; do 
-                            read -r -p "Select the user id to be displayed: "  
-                            id="$REPLY"
-                            validate_id "$id" "${ids[@]}"
-                            if [[ "$flag_choose_id_in_search" == "false" ]]; then
-                                break;
-                            fi
-                        done
-					fi
-					true	
-				;;
+                    "Message")
+                        result=$(sqlite3 -header -column "$DATABASE" "SELECT * FROM address WHERE message='$option';")
+                        id_database=$(sqlite3 "$DATABASE" "SELECT id FROM address WHERE message='$option';")
+                        if [ -z "$result" ]; then
+                            echo -e "${txtyellow}Invalid. Found no Message${txtreset}"
+                            sleep 3
+                        else
+                            echo "$result"
+                            IFS=$'\n' read -r -d '' -a ids <<< "$id_database"
+                            while true; do 
+                                read -r -p "Select the user id to be displayed: "  
+                                id="$REPLY"
+                                validate_id "$id" "${ids[@]}"
+                                if [[ "$flag_choose_id_in_search" == "false" ]]; then
+                                    break;
+                                fi
+                            done
+                        fi
+                        true	
+                    ;;
 
-				"All")
-					echo -e "${txtgreen}Show all data of address book${txtreset}"
-					sqlite3 -header -column "$DATABASE" "SELECT * FROM address;"
-					sleep 10
-					SEARCH_MENU_STATE="field"
-					REPLY=""
-					true	
-				;;
-			esac
-		fi
-	fi
+                    "All")
+                        echo -e "${txtgreen}Show all data of address book${txtreset}"
+                        sqlite3 -header -column "$DATABASE" "SELECT * FROM address;"
+                        sleep 10
+                        SEARCH_MENU_STATE="field"
+                        REPLY=""
+                        true	
+                    ;;
+                esac
+            fi
+        fi
+    fi
 	true;
 }
 
@@ -648,16 +669,19 @@ function choose_search_menu_option()
 function show_search_result()
 {
     if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
-        local result
-        result=$(sqlite3 "$DATABASE" "SELECT * FROM address WHERE id='$id';")
-        IFS=$'\n' read -d '' -r -a lines <<< "$result"
-        IFS='|' read -r i0 i1 i2 i3 i4 i5 i6 <<< "$lines"
-        name="$i1"
-        email="$i2"
-        tel_no="$i3" 
-        mob_no="$i4"
-        place="$i5"
-        message="$i6"
+        if [[ $flag_show_search == "true" ]]; then
+            local result
+            result=$(sqlite3 "$DATABASE" "SELECT * FROM address WHERE id='$id';")
+            IFS=$'\n' read -d '' -r -a lines <<< "$result"
+            IFS='|' read -r i0 i1 i2 i3 i4 i5 i6 <<< "$lines"
+            name="$i1"
+            email="$i2"
+            tel_no="$i3" 
+            mob_no="$i4"
+            place="$i5"
+            message="$i6"
+            flag_show_search=false
+        fi
     fi
 }
 
@@ -704,6 +728,15 @@ function choose_edit_menu_option()
     fi
 }
 
+function update_database()
+{
+    # echo "$id $name $email $tel_no $mob_no $place $message"
+    sqlite3 "$DATABASE" "UPDATE address SET name='$name', email='$email', tel_no='$tel_no', mob_no='$mob_no', place='$place', message='$message' WHERE id=$id;" 
+    id=""
+    # echo "Update database"
+    # sleep 4
+}
+
 function edit_operation()
 {
 	# TODO Provide an option to change fields of an entry
@@ -711,6 +744,69 @@ function edit_operation()
 	# 2. As per user selection, prompt a message to enter respected value
 	# 3. Verify the user entry to field for matching. Eg mob number only 10 digits to enter
     # 4. Prompt error in case any mismatch of entered data and fields	
+    if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
+        if [[ $EDIT_MENU_STATE != "field" ]]; then
+            local option="$REPLY"
+            case $EDIT_MENU_STATE in
+                "Name")
+                    validate_entry "$option" "$EDIT_MENU_STATE"
+                    if [[ $flag_edit_entry_error == "false" ]]; then
+                        EDIT_MENU_STATE="field"
+                    fi
+                    REPLY="" 
+                ;;
+
+                "Email")
+                    validate_entry "$option" "$EDIT_MENU_STATE"
+                    if [[ $flag_edit_entry_error == "false" ]]; then
+                        EDIT_MENU_STATE="field"
+                    fi
+                    REPLY="" 
+                ;;
+
+                "Telephone Number")
+                    validate_entry "$option" "$EDIT_MENU_STATE"
+                    if [[ $flag_edit_entry_error == "false" ]]; then
+                        EDIT_MENU_STATE="field"
+                    fi
+                    REPLY="" 
+                ;;
+
+                "Mobile Number")
+                    validate_entry "$option" "$EDIT_MENU_STATE"
+                    if [[ $flag_edit_entry_error == "false" ]]; then
+                        EDIT_MENU_STATE="field"
+                    fi
+                    REPLY="" 
+                ;;
+
+                "Place")
+                    validate_entry "$option" "$EDIT_MENU_STATE"
+                    if [[ $flag_edit_entry_error == "false" ]]; then
+                        EDIT_MENU_STATE="field"
+                    fi
+                    REPLY="" 
+                ;;
+
+                "Message")
+                    message="$option"
+                    EDIT_MENU_STATE="field"
+                    REPLY=""
+                ;;
+
+                "Save")
+                    update_database             
+                    reset_global_value
+                    echo -e "${txtgreen}SAVE VALUE TO ADDRESS DATABASE${txtreset}"
+                    sleep 3
+                    EDIT_MENU_STATE="field"
+                    SEARCH_EDIT_STATE="search"
+                    MENU_STATE="menu_header"
+                    flag_show_search="true"
+                ;;
+            esac
+        fi
+    fi
 	true;
 }
 

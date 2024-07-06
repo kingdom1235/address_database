@@ -421,13 +421,27 @@ function validate_id()
 		fi
 	done
 	if [[ $flag_choose_id_in_search == false ]]; then
-        read -r -p "Do you want to delete it? (y/n)"
-		SEARCH_EDIT_STATE="edit"
-		SEARCH_MENU_STATE="field"
+        read -r -p "Do you want to delete it? (y/n) "
+        delete_choose_id "$REPLY"
 	else
 		echo -e "${txtred}Wrong id.${txtreset}"
 		sleep 3
 	fi
+}
+
+function delete_choose_id()
+{
+    local option="$1"
+    case $option in
+        "yes" | "y" | "Y" | "Yes" | "YES")
+            sqlite3 "$DATABASE" "DELETE FROM address WHERE id='$id'"    
+        ;;
+        
+        *)
+            SEARCH_EDIT_STATE="edit"
+            SEARCH_MENU_STATE="field"
+        ;;
+    esac
 }
 
 function search_operation()

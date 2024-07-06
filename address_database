@@ -34,7 +34,7 @@ Search="${txtred}Search${txtreset}"
 Edit="Edit"
 
 # Time out periods
-TIME_OUT=5
+TIME_OUT=10
 
 # Menu state
 MENU_STATE="menu_header"
@@ -65,6 +65,7 @@ if [ ! -f "$DATABASE" ]; then
 
 	sqlite3 "$DATABASE" "CREATE TABLE IF NOT EXISTS log(
 							id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            id_address_book TEXT,
 							name TEXT,
 							email TEXT,
 							tel_no TEXT,
@@ -386,7 +387,8 @@ function reset_global_value()
 	place=" "
 	message=" "
 	id=" "
-	true;
+    mode=" "
+    time=" "
 }
 
 
@@ -638,9 +640,11 @@ function search_operation()
                     ;;
 
                     "All")
-                        echo -e "${txtgreen}Show all data of address book${txtreset}"
+                        echo -e "\n"
+                        echo -e "${txtgreen}SHOW ALL DATA OF ADDRESS BOOK${txtreset}"
+                        echo -e "\n"
                         sqlite3 -header -column "$DATABASE" "SELECT * FROM address;"
-                        sleep 10
+                        sleep 5 
                         SEARCH_MENU_STATE="field"
                         REPLY=""
                         true	
@@ -849,7 +853,7 @@ function log()
 	# TODO Write activities to log files along with timestamp, pass argument as a string
     mode="$1"
     time="$2"
-	sqlite3 "$DATABASE" "INSERT INTO log (name, email, tel_no, mob_no, place, message, mode, time) VALUES ('$name', '$email', '$tel_no', '$mob_no', '$place', '$message', '$mode', '$time');"		
+	sqlite3 "$DATABASE" "INSERT INTO log (id_address_book, name, email, tel_no, mob_no, place, message, mode, time) VALUES ( '$id', '$name', '$email', '$tel_no', '$mob_no', '$place', '$message', '$mode', '$time');"		
 	true;
 }
 

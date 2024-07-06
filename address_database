@@ -423,6 +423,7 @@ function validate_id()
 	if [[ $flag_choose_id_in_search == false ]]; then
         read -r -p "Do you want to delete it? (y/n) "
         delete_choose_id "$REPLY"
+        REPLY=""
 	else
 		echo -e "${txtred}Wrong id.${txtreset}"
 		sleep 3
@@ -602,46 +603,99 @@ function search_operation()
 
 function choose_search_menu_option()
 {
-	if [[ $SEARCH_MENU_STATE == "field" ]]; then
-		local option="$REPLY"
-		case $option in
-			1)
-				SEARCH_MENU_STATE="Name"
-			;;
+    if [[ $SEARCH_EDIT_STATE == "search" ]]; then
+        if [[ $SEARCH_MENU_STATE == "field" ]]; then
+            local option="$REPLY"
+            case $option in
+                1)
+                    SEARCH_MENU_STATE="Name"
+                ;;
 
-			2)
-				SEARCH_MENU_STATE="Email"
-			;;
+                2)
+                    SEARCH_MENU_STATE="Email"
+                ;;
 
-			3)
-				SEARCH_MENU_STATE="Telephone Number"
-			;;
+                3)
+                    SEARCH_MENU_STATE="Telephone Number"
+                ;;
 
-			4)
-				SEARCH_MENU_STATE="Mobile Number"
-			;;
+                4)
+                    SEARCH_MENU_STATE="Mobile Number"
+                ;;
 
-			5)
-				SEARCH_MENU_STATE="Place"
-			;;
+                5)
+                    SEARCH_MENU_STATE="Place"
+                ;;
 
-			6)
-				SEARCH_MENU_STATE="Message"
-			;;
+                6)
+                    SEARCH_MENU_STATE="Message"
+                ;;
 
-			7)
-				SEARCH_MENU_STATE="All"
-			;;
+                7)
+                    SEARCH_MENU_STATE="All"
+                ;;
 
-			x)
-				SEARCH_MENU_STATE="field"
-				MENU_STATE="menu_header"
-			;;
-		esac
-	fi
+                x)
+                    SEARCH_MENU_STATE="field"
+                    MENU_STATE="menu_header"
+                ;;
+            esac
+        fi
+    fi
 }
 
 #-----------------------------SEARCH MENU-------------------------------#
+function show_search_result()
+{
+    if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
+        local result
+        result=$(sqlite3 "$DATABASE" "SELECT * FROM address WHERE id='$id';")
+    fi
+}
+
+function choose_edit_menu_option()
+{
+    if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
+        if [[ $EDIT_MENU_STATE == "field" ]]; then
+            local option="$REPLY"
+            case $option in
+                1)
+                    EDIT_MENU_STATE="Name"
+                ;;
+
+                2)
+                    EDIT_MENU_STATE="Email"
+                ;;
+
+                3)
+                    EDIT_MENU_STATE="Telephone Number"
+                ;;
+
+                4)
+                    EDIT_MENU_STATE="Mobile Number"
+                ;;
+
+                5)
+                    EDIT_MENU_STATE="Place"
+                ;;
+
+                6)
+                    EDIT_MENU_STATE="Message"
+                ;;
+
+                7)
+                    EDIT_MENU_STATE="Save"
+                ;;
+
+                x)
+                    EDIT_MENU_STATE="field"
+                    MENU_STATE="menu_header"
+                ;;
+            esac
+        fi
+    fi
+}
+
 function edit_operation()
 {
 	# TODO Provide an option to change fields of an entry
@@ -674,6 +728,9 @@ function show_UI()
 			search_and_edit
 			search_operation
 			choose_search_menu_option	
+            show_search_result
+            edit_operation
+            choose_edit_menu_option
 		;;
 	esac
 	true;

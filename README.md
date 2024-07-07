@@ -1,5 +1,7 @@
 # Address_database
-![Language] (https://img.shields.io/badge/Bash-4EAA25?style=flat&logo=gnubash&logoColor=white)
+
+![Language](https://img.shields.io/badge/Bash-4EAA25?style=flat&logo=gnubash&logoColor=white)
+
 #### Video Demo:
 #### Description: An address database script to save people's information using SQLite3.
 

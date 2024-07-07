@@ -1,5 +1,14 @@
 #!/bin/bash
 
+#-----------------------------COPY RIGHT-------------------------------#
+# Author: Khai Tran
+# Date: June 4, 2024
+# Description: A simple address database based on bash script
+
+#-----------------------------REFERENCE-------------------------------#
+# Chat GPT
+# Website: Emertxe - Linux Systems Project - Address Database
+
 #-----------------------------GLOBAL VARIABLE-------------------------------#
 #ANSI color codes
 txtred='\e[1;31m'

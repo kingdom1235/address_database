@@ -16,6 +16,15 @@ mob_no=" "
 place=" "
 message=" "
 id=" "
+id_temp=" "
+
+# Log variable
+name_log=" "
+email_log=" "
+tel_no_log=" "
+mob_no_log=" "
+place_log=" "
+message_log=" "
 mode=""
 time=""
 
@@ -293,6 +302,8 @@ function validate_entry()
 	# 4. Place must have only alphabets
 	local option="$1"
 	local state="$2"
+    local id_tmp=$(sqlite3 "$DATABASE" "SELECT last_insert_rowid();" | xargs | sed 's/[^0-9]*//g')
+    echo "id_tmp: $id_tmp"
 	# echo "Validate entry with $option and $state"
 	# sleep 4
 	case $state in
@@ -375,6 +386,8 @@ function database_entry()
     local current_time
     current_time=$(date '+%Y-%m-%d %H:%M:%S')
 	sqlite3 "$DATABASE" "INSERT INTO address (name, email, tel_no, mob_no, place, message) VALUES ('$name', '$email', '$tel_no', '$mob_no', '$place', '$message');"		
+    echo "ADD TO DATABASE"
+    echo "$id_temp"
     log "INSERT" "$current_time"
 }
 
@@ -470,6 +483,7 @@ function validate_id()
 	done
 	if [[ $flag_choose_id_in_search == false ]]; then
         read -r -p "Do you want to delete it? (y/n) "
+        sleep 5
         delete_choose_id "$REPLY"
         REPLY=""
 	else
@@ -483,6 +497,9 @@ function delete_choose_id()
     local option="$1"
     case $option in
         "yes" | "y" | "Y" | "Yes" | "YES")
+            local current_time
+            current_time=$(date '+%Y-%m-%d %H:%M:%S')
+            log "DELETE" "$current_time" 
             sqlite3 "$DATABASE" "DELETE FROM address WHERE id='$id'"    
         ;;
         
@@ -523,6 +540,7 @@ function search_operation()
                             while true; do 
                                 read -r -p "Select the user id to be displayed: "  
                                 id="$REPLY"
+                                echo "Test: $name"
                                 validate_id "$id" "${ids[@]}"
                                 if [[ "$flag_choose_id_in_search" == "false" ]]; then
                                     break;
@@ -853,7 +871,24 @@ function log()
 	# TODO Write activities to log files along with timestamp, pass argument as a string
     mode="$1"
     time="$2"
-	sqlite3 "$DATABASE" "INSERT INTO log (id_address_book, name, email, tel_no, mob_no, place, message, mode, time) VALUES ( '$id', '$name', '$email', '$tel_no', '$mob_no', '$place', '$message', '$mode', '$time');"		
+    case $mode in
+        "INSERT")
+            if [[ $id == " " ]]; then
+                echo "TEST id_temp: $id_temp"
+                sleep 4
+            fi
+	        sqlite3 "$DATABASE" "INSERT INTO log (id_address_book, name, email, tel_no, mob_no, place, message, mode, time) VALUES ( '$id_temp', '$name', '$email', '$tel_no', '$mob_no', '$place', '$message', '$mode', '$time');"		
+        ;;
+
+        "UPDATE")
+	        sqlite3 "$DATABASE" "INSERT INTO log (id_address_book, name, email, tel_no, mob_no, place, message, mode, time) VALUES ( '$id', '$name', '$email', '$tel_no', '$mob_no', '$place', '$message', '$mode', '$time');"		
+        ;;
+
+        "DELETE")
+            sqlite3 "$DATABASE" "INSERT INTO log (id_address_book, name, email, tel_no, mob_no, place, message, mode, time) VALUES ( '$id', '$name', '$email', '$tel_no', '$mob_no', '$place', '$message', '$mode', '$time');"		
+        ;;
+
+    esac
 	true;
 }
 

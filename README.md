@@ -40,7 +40,7 @@ You can use the address_database script to manage people's information
 ```bash
 Usage: address_database
 ```
-Main menu
+Main menu with feature choose menu state (Add, Search, Edit)
 ```bash
 My Database Project
 Please choose the below options:
@@ -53,4 +53,61 @@ x. Exit
 Note: Script Timeout is set
 Please choose your option:
 ```
+
+Add entry menu with feature add people's information to address database.
+```bash
+My Database Project
+Please choose the below options:
+
+Add New Entry Screen:
+
+1. Name                 :
+2. Email                :
+3. Tel No               :
+4. Mob No               :
+5. Place                :
+6. Message              :
+7. Save
+x. Exit
+Please choose the field to be added:
+```
+
+Search menu with feature search people's information from address database and choose to delete or edit it.
+```bash
+My Database Project
+Please choose the below options:
+
+Search / Edit by:
+
+1. Name                 :
+2. Email                :
+3. Tel No               :
+4. Mob No               :
+5. Place                :
+6. Message              :
+7. All
+x. Exit
+Please choose the field to be searched:
+```
+
+Edit menu with feature edit people's information in address database.
+```bash
+My Database Project
+Please choose the below options:
+
+Search / Edit by:
+
+1. Name                 :
+2. Email                :
+3. Tel No               :
+4. Mob No               :
+5. Place                :
+6. Message              :
+7. Save
+x. Exit
+Please choose your option:
+```
+
+And finally show log file with feature show every action on address database
+
 ## This was CS50!

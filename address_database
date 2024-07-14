@@ -796,6 +796,8 @@ function choose_edit_menu_option()
                 ;;
 
                 x)
+                    reset_global_value
+                    SEARCH_EDIT_STATE="search"
                     EDIT_MENU_STATE="field"
                     MENU_STATE="menu_header"
                 ;;

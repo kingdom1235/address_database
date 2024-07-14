@@ -52,7 +52,7 @@ Search="${txtred}Search${txtreset}"
 Edit="Edit"
 
 # Time out periods
-TIME_OUT=10
+TIME_OUT=20
 
 # Menu state
 MENU_STATE="menu_header"
@@ -184,7 +184,8 @@ function field_menu()
 			3. Tel No		: $tel_no
 			4. Mob No		: $mob_no
 			5. Place		: $place
-			6. Message		: $message
+			6. Message		: $message 
+7. Save
 			${txtred}x${txtreset}. Exit
 
 		_EOF_
@@ -193,7 +194,9 @@ function field_menu()
 	if [[ $FIELD_MENU_STATE == "field" ]]; then
 		read -r -p "Please choose the field to be added: "
 	else 
-		read -r -p "Please enter the $FIELD_MENU_STATE: "
+        if [[ $FIELD_MENU_STATE != "Save" ]]; then
+            read -r -p "Please enter the $FIELD_MENU_STATE: "
+        fi
 	fi
 
 	true;
@@ -228,10 +231,14 @@ function choose_field_menu_option()
 				FIELD_MENU_STATE="Message"
 			;;
 
+            7)
+                FIELD_MENU_STATE="Save"
+            ;;
+
 			x)
+                reset_global_value
+                REPLY=""
 				FIELD_MENU_STATE="field"
-				database_entry
-				reset_global_value
 				MENU_STATE="menu_header"
 			;;
 		esac
@@ -246,59 +253,72 @@ function add_entry()
 
 	if [[ $FIELD_MENU_STATE != "field" ]]; then
 		local option="$REPLY"
-		case $FIELD_MENU_STATE in
-			"Name")
-				validate_entry "$option" "$FIELD_MENU_STATE"
-				if [[ $flag_add_entry_error == "false" ]]; then
-					FIELD_MENU_STATE="field"
-				fi
-				REPLY="" # Reset Reply
-				true
-			;;
+        if [[ $option == "x" ]]; then
+            FIELD_MENU_STATE="field"
+            REPLY=""
+        else
+            case $FIELD_MENU_STATE in
+                "Name")
+                    validate_entry "$option" "$FIELD_MENU_STATE"
+                    if [[ $flag_add_entry_error == "false" ]]; then
+                        FIELD_MENU_STATE="field"
+                    fi
+                    REPLY="" # Reset Reply
+                    true
+                ;;
 
-			"Email")
-				validate_entry "$option" "$FIELD_MENU_STATE"
-				if [[ $flag_add_entry_error == "false" ]]; then
-					FIELD_MENU_STATE="field"
-				fi
-				REPLY="" # Reset Reply
-				true
-			;;
+                "Email")
+                    validate_entry "$option" "$FIELD_MENU_STATE"
+                    if [[ $flag_add_entry_error == "false" ]]; then
+                        FIELD_MENU_STATE="field"
+                    fi
+                    REPLY="" # Reset Reply
+                    true
+                ;;
 
-			"Telephone Number")
-				validate_entry "$option" "$FIELD_MENU_STATE"
-				if [[ $flag_add_entry_error == "false" ]]; then
-					FIELD_MENU_STATE="field"
-				fi
-				REPLY="" # Reset Reply
-				true
-			;;
+                "Telephone Number")
+                    validate_entry "$option" "$FIELD_MENU_STATE"
+                    if [[ $flag_add_entry_error == "false" ]]; then
+                        FIELD_MENU_STATE="field"
+                    fi
+                    REPLY="" # Reset Reply
+                    true
+                ;;
 
-			"Mobile Number")
-				validate_entry "$option" "$FIELD_MENU_STATE"
-				if [[ $flag_add_entry_error == "false" ]]; then
-					FIELD_MENU_STATE="field"
-				fi
-				REPLY="" # Reset Reply
-				true
-			;;
+                "Mobile Number")
+                    validate_entry "$option" "$FIELD_MENU_STATE"
+                    if [[ $flag_add_entry_error == "false" ]]; then
+                        FIELD_MENU_STATE="field"
+                    fi
+                    REPLY="" # Reset Reply
+                    true
+                ;;
 
-			"Place")
-				validate_entry "$option" "$FIELD_MENU_STATE"
-				if [[ $flag_add_entry_error == "false" ]]; then
-					FIELD_MENU_STATE="field"
-				fi
-				REPLY="" # Reset Reply
-				true
-			;;
+                "Place")
+                    validate_entry "$option" "$FIELD_MENU_STATE"
+                    if [[ $flag_add_entry_error == "false" ]]; then
+                        FIELD_MENU_STATE="field"
+                    fi
+                    REPLY="" # Reset Reply
+                    true
+                ;;
 
-			"Message")
-				message="$option"
-				FIELD_MENU_STATE="field"
-				REPLY="" # Reset Reply
-				true
-			;;
-		esac
+                "Message")
+                    message="$option"
+                    FIELD_MENU_STATE="field"
+                    REPLY="" # Reset Reply
+                    true
+                ;;
+
+                "Save")
+                    database_entry
+                    reset_global_value
+                    REPLY=""
+                    FIELD_MENU_STATE="field"
+                    MENU_STATE="menu_header"
+                ;;
+            esac
+        fi
 	fi
 }
 
@@ -721,7 +741,7 @@ function choose_search_menu_option()
     fi
 }
 
-#-----------------------------SEARCH MENU-------------------------------#
+#-----------------------------EDIT MENU-------------------------------#
 function show_search_result()
 {
     if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
@@ -806,64 +826,69 @@ function edit_operation()
     if [[ $SEARCH_EDIT_STATE == "edit" ]]; then
         if [[ $EDIT_MENU_STATE != "field" ]]; then
             local option="$REPLY"
-            case $EDIT_MENU_STATE in
-                "Name")
-                    validate_entry "$option" "$EDIT_MENU_STATE"
-                    if [[ $flag_edit_entry_error == "false" ]]; then
+            if [[ $option == "x" ]]; then
+                EDIT_MENU_STATE="field"
+                REPLY=""
+            else
+                case $EDIT_MENU_STATE in
+                    "Name")
+                        validate_entry "$option" "$EDIT_MENU_STATE"
+                        if [[ $flag_edit_entry_error == "false" ]]; then
+                            EDIT_MENU_STATE="field"
+                        fi
+                        REPLY="" 
+                    ;;
+
+                    "Email")
+                        validate_entry "$option" "$EDIT_MENU_STATE"
+                        if [[ $flag_edit_entry_error == "false" ]]; then
+                            EDIT_MENU_STATE="field"
+                        fi
+                        REPLY="" 
+                    ;;
+
+                    "Telephone Number")
+                        validate_entry "$option" "$EDIT_MENU_STATE"
+                        if [[ $flag_edit_entry_error == "false" ]]; then
+                            EDIT_MENU_STATE="field"
+                        fi
+                        REPLY="" 
+                    ;;
+
+                    "Mobile Number")
+                        validate_entry "$option" "$EDIT_MENU_STATE"
+                        if [[ $flag_edit_entry_error == "false" ]]; then
+                            EDIT_MENU_STATE="field"
+                        fi
+                        REPLY="" 
+                    ;;
+
+                    "Place")
+                        validate_entry "$option" "$EDIT_MENU_STATE"
+                        if [[ $flag_edit_entry_error == "false" ]]; then
+                            EDIT_MENU_STATE="field"
+                        fi
+                        REPLY="" 
+                    ;;
+
+                    "Message")
+                        message="$option"
                         EDIT_MENU_STATE="field"
-                    fi
-                    REPLY="" 
-                ;;
+                        REPLY=""
+                    ;;
 
-                "Email")
-                    validate_entry "$option" "$EDIT_MENU_STATE"
-                    if [[ $flag_edit_entry_error == "false" ]]; then
+                    "Save")
+                        update_database             
+                        reset_global_value
+                        echo -e "${txtgreen}SAVE VALUE TO ADDRESS DATABASE${txtreset}"
+                        sleep 3
                         EDIT_MENU_STATE="field"
-                    fi
-                    REPLY="" 
-                ;;
-
-                "Telephone Number")
-                    validate_entry "$option" "$EDIT_MENU_STATE"
-                    if [[ $flag_edit_entry_error == "false" ]]; then
-                        EDIT_MENU_STATE="field"
-                    fi
-                    REPLY="" 
-                ;;
-
-                "Mobile Number")
-                    validate_entry "$option" "$EDIT_MENU_STATE"
-                    if [[ $flag_edit_entry_error == "false" ]]; then
-                        EDIT_MENU_STATE="field"
-                    fi
-                    REPLY="" 
-                ;;
-
-                "Place")
-                    validate_entry "$option" "$EDIT_MENU_STATE"
-                    if [[ $flag_edit_entry_error == "false" ]]; then
-                        EDIT_MENU_STATE="field"
-                    fi
-                    REPLY="" 
-                ;;
-
-                "Message")
-                    message="$option"
-                    EDIT_MENU_STATE="field"
-                    REPLY=""
-                ;;
-
-                "Save")
-                    update_database             
-                    reset_global_value
-                    echo -e "${txtgreen}SAVE VALUE TO ADDRESS DATABASE${txtreset}"
-                    sleep 3
-                    EDIT_MENU_STATE="field"
-                    SEARCH_EDIT_STATE="search"
-                    MENU_STATE="menu_header"
-                    flag_show_search="true"
-                ;;
-            esac
+                        SEARCH_EDIT_STATE="search"
+                        MENU_STATE="menu_header"
+                        flag_show_search="true"
+                    ;;
+                esac
+            fi
         fi
     fi
 	true;

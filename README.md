@@ -39,5 +39,18 @@ cd address_database
 You can use the address_database script to manage people's information
 ```bash
 Usage: address_database
-
 ```
+Main menu
+```bash
+My Database Project
+Please choose the below options:
+
+1. Add Entry
+2. Search / Edit Entry
+3. Show log file
+x. Exit
+
+Note: Script Timeout is set
+Please choose your option:
+```
+## This was CS50!

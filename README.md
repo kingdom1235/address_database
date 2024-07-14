@@ -2,7 +2,8 @@
 
 ![Language](https://img.shields.io/badge/Bash-4EAA25?style=flat&logo=gnubash&logoColor=white)
 
-#### Video Demo: https://studio.youtube.com/video/tC6hV7XJhJM/edit
+#### Video Demo: https://www.youtube.com/watch?v=tC6hV7XJhJM&t=46s&ab_channel=Kh%E1%BA%A3iTr%E1%BA%A7n
+
 #### Description: An address database script to save people's information using SQLite3.
 
 ## Prerequisites
